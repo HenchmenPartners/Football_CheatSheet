@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TC JV Full Playbook — 1-Page Sideline Call Sheet</title>
+  <title>TC JV Playbook — 1-Page Sideline Call Sheet</title>
   <style>
     :root {
       --navy: #0f2544;
@@ -27,9 +27,10 @@
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background: #e2e8f0;
       color: var(--text-dark);
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -38,57 +39,286 @@
       print-color-adjust: exact !important;
     }
 
-    /* Screen-only toolbar */
+    /* =========================================================================
+       PASSWORD LOGIN GATE (Protects Playbook Until Unlocked)
+       ========================================================================= */
+    .login-gate {
+      position: fixed;
+      inset: 0;
+      z-index: 5000;
+      background: radial-gradient(circle at top, #1e3a5f 0%, #0b192c 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .login-gate.unlocked {
+      display: none;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 400px;
+      background: #ffffff;
+      border-radius: 14px;
+      padding: 28px 24px;
+      box-shadow: 0 24px 50px rgba(0, 0, 0, 0.45);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      text-align: center;
+    }
+
+    .login-badge {
+      width: 56px;
+      height: 56px;
+      margin: 0 auto;
+      border-radius: 14px;
+      background: var(--navy);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      box-shadow: 0 6px 14px rgba(15, 37, 68, 0.25);
+    }
+
+    .login-card h1 {
+      font-size: 19px;
+      font-weight: 800;
+      color: var(--navy);
+      letter-spacing: -0.2px;
+    }
+
+    .login-card p {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    .login-input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .login-input {
+      width: 100%;
+      padding: 11px 44px 11px 14px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-dark);
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .login-input:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    .toggle-pw-btn {
+      position: absolute;
+      right: 8px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 15px;
+      padding: 4px 6px;
+      color: #64748b;
+    }
+
+    .login-submit-btn {
+      width: 100%;
+      padding: 11px 16px;
+      border: none;
+      border-radius: 8px;
+      background: var(--navy);
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: background 0.15s ease, transform 0.1s ease;
+    }
+
+    .login-submit-btn:hover { background: #1e3a5f; }
+    .login-submit-btn:active { transform: scale(0.99); }
+
+    .login-error {
+      min-height: 18px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #dc2626;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
+    }
+
+    .shake {
+      animation: shake 0.35s ease;
+    }
+
+    /* Hide main workspace while locked */
+    body.app-locked .app-shell {
+      display: none;
+    }
+
+    .app-shell {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* =========================================================================
+       SCREEN-ONLY INTERACTIVE TOOLBAR
+       ========================================================================= */
     .toolbar {
       width: 10.5in;
       max-width: 100%;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 10px;
+      flex-wrap: wrap;
+      gap: 8px;
       background: var(--navy);
-      color: #fff;
-      padding: 8px 14px;
-      border-radius: 6px;
-      margin-bottom: 10px;
+      color: #ffffff;
+      padding: 8px 12px;
+      border-radius: 8px;
+      margin-bottom: 8px;
       font-size: 12px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 3px 10px rgba(15, 23, 42, 0.18);
     }
 
-    .toolbar-tip {
-      color: #cbd5e1;
-      font-size: 11.5px;
+    .toolbar-left,
+    .toolbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
     }
 
-    .toolbar-tip strong {
-      color: #fff;
-    }
-
-    .print-btn {
-      background: #22c55e;
-      color: #052e16;
+    .btn {
       border: none;
-      padding: 6px 14px;
-      border-radius: 4px;
-      font-weight: 800;
-      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 11.5px;
       cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
       white-space: nowrap;
-      transition: background 0.15s ease;
+      transition: filter 0.15s ease, transform 0.1s ease;
     }
 
-    .print-btn:hover {
-      background: #4ade80;
+    .btn:hover { filter: brightness(1.08); }
+    .btn:active { transform: scale(0.98); }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .btn-edit-on  { background: #38bdf8; color: #082f49; }
+    .btn-edit-off { background: #475569; color: #f8fafc; }
+    .btn-ai       { background: #a855f7; color: #ffffff; }
+    .btn-cloud    { background: #f59e0b; color: #451a03; }
+    .btn-backup   { background: #0ea5e9; color: #ffffff; }
+    .btn-print    { background: #22c55e; color: #052e16; font-weight: 800; }
+    .btn-subtle   { background: rgba(255, 255, 255, 0.15); color: #f1f5f9; }
+    .btn-danger   { background: #ef4444; color: #ffffff; }
+
+    .status-pill {
+      font-size: 11px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.12);
+      color: #e2e8f0;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
 
-    /* 1-Page Landscape Sheet Container (fits US Letter 11x8.5 with 0.25in margins) */
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #94a3b8;
+      flex-shrink: 0;
+    }
+    .status-dot.connected { background: #22c55e; }
+    .status-dot.saving    { background: #facc15; }
+    .status-dot.error     { background: #ef4444; }
+
+    /* Secondary Edit Helper Bar */
+    .edit-bar {
+      width: 10.5in;
+      max-width: 100%;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 6px 10px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 11px;
+      box-shadow: 0 1px 4px rgba(15, 23, 42, 0.06);
+    }
+
+    .edit-bar.hidden { display: none; }
+
+    .tag-inserter {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .tag-btn {
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      border-radius: 4px;
+      padding: 3px 7px;
+      font-size: 10.5px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .scale-control {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #334155;
+      font-weight: 600;
+    }
+
+    /* Responsive horizontal scroll wrapper for mobile screens */
+    .sheet-scroll-wrap {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      overflow-x: auto;
+      padding-bottom: 12px;
+    }
+
+    /* =========================================================================
+       1-PAGE LANDSCAPE SHEET (Fits US Letter 11x8.5 with 0.25in margins)
+       ========================================================================= */
     .sheet {
       width: 10.5in;
+      min-width: 10.5in;
       min-height: 8in;
       height: auto;
       background: #ffffff;
       border: 1.5px solid #94a3b8;
-      box-shadow: 0 6px 24px rgba(15, 23, 42, 0.18);
+      border-radius: 4px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.16);
       padding: 7px 10px;
       display: flex;
       flex-direction: column;
@@ -100,12 +330,13 @@
     /* Header */
     .header {
       background: var(--navy);
-      color: #fff;
+      color: #ffffff;
       padding: 4px 9px;
       border-radius: 4px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 8px;
     }
 
     .header-title {
@@ -120,10 +351,11 @@
       gap: 6px;
       font-size: 8.2px;
       align-items: center;
+      flex-wrap: wrap;
     }
 
     .meta-pill {
-      background: rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.16);
       padding: 2px 6px;
       border-radius: 3px;
       font-weight: 600;
@@ -166,20 +398,14 @@
       letter-spacing: 0.2px;
     }
 
-    .wb-b {
-      background: #9a3412; /* Card Set B indicator */
-    }
-
+    .wb-b { background: #9a3412; }
     .wb-open {
       background: #e2e8f0;
       color: #64748b;
       border: 1px dashed #94a3b8;
     }
 
-    .n {
-      font-weight: 900;
-      margin-right: 1px;
-    }
+    .n { font-weight: 900; margin-right: 1px; }
 
     /* Section Headings */
     .sec-title {
@@ -187,13 +413,14 @@
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.45px;
-      color: #fff;
+      color: #ffffff;
       background: var(--slate);
       padding: 2.5px 7px;
       border-radius: 3px 3px 0 0;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 6px;
     }
 
     .sec-sub {
@@ -215,6 +442,7 @@
     }
 
     .def-card {
+      position: relative;
       display: grid;
       grid-template-columns: 1.08fr 1.72fr;
       border-bottom: 1px solid var(--border);
@@ -252,18 +480,11 @@
       flex-direction: column;
       justify-content: center;
       gap: 1.5px;
-      background: #fff;
+      background: #ffffff;
     }
 
-    .primary-call {
-      font-weight: 700;
-      color: var(--text-dark);
-    }
-
-    .why-note {
-      font-size: 7.3px;
-      color: var(--text-muted);
-    }
+    .primary-call { font-weight: 700; color: var(--text-dark); }
+    .why-note { font-size: 7.3px; color: var(--text-muted); }
 
     /* Section 2: Master 24-Play Table */
     table.play-table {
@@ -292,24 +513,11 @@
       vertical-align: middle;
     }
 
-    table.play-table tr:nth-child(even) td {
-      background: #f8fafc;
-    }
+    table.play-table tr:nth-child(even) td { background: #f8fafc; }
+    table.play-table tr:last-child td { border-bottom: none; }
 
-    table.play-table tr:last-child td {
-      border-bottom: none;
-    }
-
-    .play-name {
-      font-weight: 800;
-      color: var(--navy);
-      font-size: 7.85px;
-    }
-
-    .avoid-txt {
-      color: #b91c1c;
-      font-weight: 600;
-    }
+    .play-name { font-weight: 800; color: var(--navy); font-size: 7.85px; }
+    .avoid-txt { color: #b91c1c; font-weight: 600; }
 
     /* Section 3: Bottom 3-Column Strip */
     .bottom-grid {
@@ -330,7 +538,7 @@
       padding: 3px 6px;
       font-size: 7.6px;
       line-height: 1.22;
-      background: #fff;
+      background: #ffffff;
       flex: 1;
       display: flex;
       flex-direction: column;
@@ -341,167 +549,18 @@
     .row-item {
       border-bottom: 1px dashed #e2e8f0;
       padding-bottom: 2px;
-    }
-
-    .row-item:last-child {
-      border-bottom: none;
-      padding-bottom: 0;
-    }
-
-    .row-item strong {
-      color: var(--navy);
-    }
-
-    .arrow {
-      color: #dc2626;
-      font-weight: 900;
-      margin: 0 1.5px;
-    }
-
-    /* Print Rules */
-    @page {
-      size: letter landscape;
-      margin: 0.25in;
-    }
-
-    @media print {
-      body {
-        background: #fff;
-        padding: 0;
-      }
-      .toolbar,
-      .edit-bar,
-      .row-actions,
-      .modal-backdrop,
-      .toast {
-        display: none !important;
-      }
-      .sheet {
-        width: 100%;
-        height: 7.95in;
-        border: none;
-        box-shadow: none;
-        padding: 0;
-        transform: none !important;
-      }
-      [contenteditable] {
-        outline: none !important;
-        background: transparent !important;
-      }
-    }
-
-    /* Interactive Toolbar & Controls */
-    .toolbar {
-      flex-wrap: wrap;
-      gap: 8px;
-      padding: 8px 12px;
-    }
-
-    .toolbar-left {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .toolbar-actions {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      border: none;
-      padding: 5px 10px;
-      border-radius: 5px;
-      font-weight: 700;
-      font-size: 11.5px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      white-space: nowrap;
-      transition: filter 0.15s ease, transform 0.1s ease;
-    }
-
-    .btn:hover { filter: brightness(1.08); }
-    .btn:active { transform: scale(0.98); }
-
-    .btn-edit-on { background: #38bdf8; color: #082f49; }
-    .btn-edit-off { background: #475569; color: #f8fafc; }
-    .btn-ai { background: #a855f7; color: #ffffff; }
-    .btn-drive { background: #f59e0b; color: #451a03; }
-    .btn-backup { background: #0ea5e9; color: #ffffff; }
-    .btn-subtle { background: rgba(255,255,255,0.14); color: #f1f5f9; }
-    .btn-danger { background: #ef4444; color: #ffffff; }
-
-    .status-pill {
-      font-size: 11px;
-      padding: 3px 8px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.12);
-      color: #e2e8f0;
-      font-weight: 600;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .status-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: #94a3b8;
-    }
-    .status-dot.connected { background: #22c55e; }
-    .status-dot.saving { background: #facc15; }
-
-    /* Secondary Edit Helper Bar */
-    .edit-bar {
-      width: 10.5in;
-      max-width: 100%;
-      background: #ffffff;
-      border: 1px solid #cbd5e1;
-      border-radius: 6px;
-      padding: 6px 10px;
-      margin-bottom: 10px;
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 8px;
-      font-size: 11px;
-      box-shadow: 0 1px 4px rgba(15,23,42,0.06);
-    }
-
-    .edit-bar.hidden { display: none; }
-
-    .tag-inserter {
-      display: flex;
-      align-items: center;
       gap: 4px;
-      flex-wrap: wrap;
+      align-items: flex-start;
     }
 
-    .tag-btn {
-      border: 1px solid rgba(0,0,0,0.08);
-      border-radius: 4px;
-      padding: 2px 6px;
-      font-size: 10.5px;
-      font-weight: 700;
-      cursor: pointer;
-    }
+    .row-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .row-item strong { color: var(--navy); }
 
-    .scale-control {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      color: #334155;
-      font-weight: 600;
-    }
+    .arrow { color: #dc2626; font-weight: 900; margin: 0 1.5px; }
 
-    /* Inline Editing Highlights (Screen Only) */
+    /* Inline Editing Highlights */
     .editing-active [contenteditable="true"] {
       border-radius: 2px;
       transition: box-shadow 0.12s ease, background-color 0.12s ease;
@@ -513,7 +572,7 @@
     .editing-active [contenteditable="true"]:focus {
       outline: 2px solid #2563eb;
       outline-offset: 1px;
-      background-color: rgba(239, 246, 255, 0.9);
+      background-color: rgba(239, 246, 255, 0.95);
       color: #0f172a;
     }
     .editing-active .header [contenteditable="true"]:focus,
@@ -523,15 +582,10 @@
       outline-color: #38bdf8;
     }
 
-    /* Subtle Row Add/Delete Controls in Edit Mode */
-    .row-actions {
-      display: none;
-      gap: 3px;
-      align-items: center;
-    }
-    .editing-active .row-actions {
-      display: inline-flex;
-    }
+    /* Subtle Add/Delete Controls in Edit Mode */
+    .row-actions { display: none; gap: 3px; align-items: center; }
+    .editing-active .row-actions { display: inline-flex; }
+
     .mini-act-btn {
       background: #e2e8f0;
       color: #334155;
@@ -549,7 +603,6 @@
     .mini-act-btn.add { background: #dcfce7; color: #166534; }
     .mini-act-btn.add:hover { background: #bbf7d0; }
 
-    .def-card { position: relative; }
     .def-card .card-del {
       position: absolute;
       top: 2px;
@@ -557,7 +610,9 @@
       z-index: 2;
     }
 
-    /* Modals */
+    /* =========================================================================
+       MODALS & TOASTS
+       ========================================================================= */
     .modal-backdrop {
       position: fixed;
       inset: 0;
@@ -567,17 +622,17 @@
       align-items: center;
       justify-content: center;
       padding: 16px;
-      z-index: 1000;
+      z-index: 2000;
     }
     .modal-backdrop.open { display: flex; }
 
     .modal {
       background: #ffffff;
       width: 100%;
-      max-width: 660px;
+      max-width: 680px;
       max-height: 90vh;
-      border-radius: 10px;
-      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.25);
+      border-radius: 12px;
+      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.28);
       display: flex;
       flex-direction: column;
       overflow: hidden;
@@ -591,18 +646,16 @@
       justify-content: space-between;
       align-items: center;
     }
-    .modal-header h2 {
-      font-size: 15px;
-      font-weight: 800;
-    }
+    .modal-header h2 { font-size: 15px; font-weight: 800; }
+
     .modal-close {
-      background: rgba(255,255,255,0.15);
-      color: #fff;
+      background: rgba(255, 255, 255, 0.16);
+      color: #ffffff;
       border: none;
-      border-radius: 5px;
+      border-radius: 6px;
       width: 28px;
       height: 28px;
-      font-size: 16px;
+      font-size: 17px;
       cursor: pointer;
     }
 
@@ -610,7 +663,7 @@
       padding: 16px;
       overflow-y: auto;
       font-size: 13px;
-      line-height: 1.45;
+      line-height: 1.48;
       color: #1e293b;
       display: flex;
       flex-direction: column;
@@ -624,32 +677,20 @@
       display: flex;
       justify-content: flex-end;
       gap: 8px;
+      flex-wrap: wrap;
     }
 
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-    .form-group label {
-      font-weight: 700;
-      font-size: 12px;
-      color: var(--navy);
-    }
-    .form-hint {
-      font-size: 11px;
-      color: #64748b;
-    }
+    .form-group { display: flex; flex-direction: column; gap: 4px; }
+    .form-group label { font-weight: 700; font-size: 12px; color: var(--navy); }
+    .form-hint { font-size: 11px; color: #64748b; }
+
     .file-drop {
       border: 2px dashed #cbd5e1;
       border-radius: 8px;
       padding: 10px 12px;
       background: #f8fafc;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
     }
+
     .form-input, .form-textarea {
       width: 100%;
       border: 1px solid #cbd5e1;
@@ -658,18 +699,22 @@
       font-family: inherit;
       font-size: 12.5px;
     }
-    .form-textarea { min-height: 64px; resize: vertical; }
+    .form-textarea { min-height: 70px; resize: vertical; }
+    .form-textarea.mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 11.5px;
+      min-height: 110px;
+    }
 
     .code-block {
       background: #0f172a;
       color: #e2e8f0;
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
       font-size: 11px;
-      line-height: 1.4;
+      line-height: 1.45;
       padding: 10px 12px;
-      border-radius: 6px;
-      max-height: 240px;
-      overflow: auto;
+      border-radius: 8px;
+      overflow-x: auto;
       white-space: pre;
     }
 
@@ -677,9 +722,32 @@
       padding-left: 18px;
       display: flex;
       flex-direction: column;
-      gap: 5px;
+      gap: 6px;
       font-size: 12.5px;
     }
+
+    .backup-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 260px;
+      overflow-y: auto;
+    }
+
+    .backup-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      background: #f8fafc;
+      font-size: 12px;
+    }
+
+    .backup-meta strong { color: var(--navy); display: block; }
+    .backup-meta span { color: #64748b; font-size: 11px; }
 
     .ai-status-box {
       display: none;
@@ -687,7 +755,7 @@
       border: 1px solid #c4b5fd;
       color: #4c1d95;
       padding: 10px 12px;
-      border-radius: 6px;
+      border-radius: 8px;
       font-size: 12px;
       font-weight: 600;
       align-items: center;
@@ -711,7 +779,6 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* Toast Notification */
     .toast {
       position: fixed;
       bottom: 18px;
@@ -722,74 +789,151 @@
       border-radius: 8px;
       font-size: 12.5px;
       font-weight: 600;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.22);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
       opacity: 0;
       transform: translateY(10px);
       pointer-events: none;
       transition: opacity 0.2s ease, transform 0.2s ease;
-      z-index: 2000;
-      max-width: 380px;
+      z-index: 6000;
+      max-width: 390px;
     }
     .toast.show { opacity: 1; transform: translateY(0); }
     .toast.success { border-left: 4px solid #22c55e; }
-    .toast.warn { border-left: 4px solid #f59e0b; }
-    .toast.error { border-left: 4px solid #ef4444; }
+    .toast.warn    { border-left: 4px solid #f59e0b; }
+    .toast.error   { border-left: 4px solid #ef4444; }
+
+    /* =========================================================================
+       PRINT RULES (Single Page US Letter Landscape)
+       ========================================================================= */
+    @page {
+      size: letter landscape;
+      margin: 0.25in;
+    }
+
+    @media print {
+      body {
+        background: #ffffff;
+        padding: 0;
+      }
+      body.app-locked .app-shell,
+      .login-gate,
+      .toolbar,
+      .edit-bar,
+      .row-actions,
+      .modal-backdrop,
+      .toast {
+        display: none !important;
+      }
+      .sheet-scroll-wrap {
+        overflow: visible;
+        padding: 0;
+      }
+      .sheet {
+        width: 100%;
+        min-width: 0;
+        height: 7.95in;
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+        padding: 0;
+      }
+      [contenteditable] {
+        outline: none !important;
+        background: transparent !important;
+      }
+    }
   </style>
 </head>
-<body class="editing-active">
+<body class="app-locked editing-active">
 
-  <!-- Screen-only Interactive Toolbar -->
-  <div class="toolbar">
-    <div class="toolbar-left">
-      <button id="toggleEditBtn" class="btn btn-edit-on" onclick="toggleEditMode()">✏️ Edit Mode: ON</button>
-      <span id="driveStatusPill" class="status-pill">
-        <span id="statusDot" class="status-dot"></span>
-        <span id="statusText">Preview Mode (Edits live in session)</span>
-      </span>
-    </div>
-    <div class="toolbar-actions">
-      <button class="btn btn-ai" onclick="openModal('aiModal')">✨ Update Playbook / Armband (AI)</button>
-      <button id="backupBtn" class="btn btn-backup" onclick="handleBackupClick()">💾 Backup</button>
-      <button class="btn btn-drive" onclick="openModal('gasModal')">☁️ Google Drive / Apps Script</button>
-      <label for="jsonImportInput" class="btn btn-subtle">📂 Load JSON</label>
-      <button class="btn btn-subtle" onclick="openModal('resetModal')">↺ Reset</button>
-      <button class="print-btn" onclick="prepareAndPrint()">🖨️ Print 1-Page PDF</button>
-    </div>
-    <input type="file" id="jsonImportInput" accept=".json" style="display:none" onchange="handleJsonImport(event)" />
+  <!-- =========================================================================
+       COACH LOGIN GATE (Password Required: Shopping90)
+       ========================================================================= -->
+  <div id="loginGate" class="login-gate">
+    <form id="loginForm" class="login-card" autocomplete="off">
+      <div class="login-badge">🏈</div>
+      <div>
+        <h1>TC JV Playbook Call Sheet</h1>
+        <p style="margin-top:4px;">Coaches Only &mdash; Enter the staff password to view, edit, and sync the sideline call sheet.</p>
+      </div>
+      <div class="login-input-wrap">
+        <input
+          id="loginPasswordInput"
+          type="password"
+          class="login-input"
+          placeholder="Enter Coach Password..."
+          autocomplete="current-password"
+          required
+        />
+        <button id="togglePwBtn" type="button" class="toggle-pw-btn" title="Show/Hide password">👁️</button>
+      </div>
+      <button type="submit" class="login-submit-btn">🔓 Unlock Playbook</button>
+      <div id="loginError" class="login-error"></div>
+    </form>
   </div>
 
-  <!-- Secondary Edit Helper Bar (Hidden when Edit Mode is OFF or Printing) -->
-  <div id="editHelperBar" class="edit-bar">
-    <div class="tag-inserter">
-      <strong style="color:var(--navy); margin-right:2px;">Click any text below to edit &bull; Insert Color Tag at cursor:</strong>
-      <button class="tag-btn t-in" onmousedown="event.preventDefault(); insertStyledTag('in')">+ Inside</button>
-      <button class="tag-btn t-ed" onmousedown="event.preventDefault(); insertStyledTag('ed')">+ Toss/Rev</button>
-      <button class="tag-btn t-kp" onmousedown="event.preventDefault(); insertStyledTag('kp')">+ QB Keep</button>
-      <button class="tag-btn t-ps" onmousedown="event.preventDefault(); insertStyledTag('ps')">+ Pass</button>
-      <button class="tag-btn t-dr" onmousedown="event.preventDefault(); insertStyledTag('dr')">+ Direct/RPO</button>
-      <button class="tag-btn wb" onmousedown="event.preventDefault(); insertBadge('A')">+ Set A #</button>
-      <button class="tag-btn wb wb-b" onmousedown="event.preventDefault(); insertBadge('B')">+ Set B #</button>
+  <!-- =========================================================================
+       MAIN WORKSPACE (Shown After Password Unlock)
+       ========================================================================= -->
+  <div class="app-shell">
+    <!-- Top Screen-Only Toolbar -->
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <button id="toggleEditBtn" type="button" class="btn btn-edit-on">✏️ Edit Mode: ON</button>
+        <span class="status-pill" id="cloudStatusPill">
+          <span id="statusDot" class="status-dot"></span>
+          <span id="statusText">Connecting to Cloud...</span>
+        </span>
+      </div>
+      <div class="toolbar-actions">
+        <button id="openAiBtn" type="button" class="btn btn-ai">✨ Update Playbook / Armband (AI)</button>
+        <button id="openBackupBtn" type="button" class="btn btn-backup">💾 Cloud Backups</button>
+        <button id="openSetupBtn" type="button" class="btn btn-cloud">☁️ GitHub &amp; Firebase Setup</button>
+        <label for="jsonImportInput" class="btn btn-subtle" style="cursor:pointer;">📂 Load JSON</label>
+        <button id="openResetBtn" type="button" class="btn btn-subtle">↺ Reset</button>
+        <button id="lockAppBtn" type="button" class="btn btn-subtle" title="Lock playbook">🔒 Lock</button>
+        <button id="printBtn" type="button" class="btn btn-print">🖨️ Print 1-Page PDF</button>
+      </div>
+      <input type="file" id="jsonImportInput" accept=".json" style="display:none;" />
     </div>
-    <div class="scale-control">
-      <label for="fontScaleSlider">Fit Scale:</label>
-      <input id="fontScaleSlider" type="range" min="85" max="110" value="100" oninput="updateFontScale(this.value)" />
-      <span id="fontScaleVal">100%</span>
+
+    <!-- Secondary Edit Helper Bar -->
+    <div id="editHelperBar" class="edit-bar">
+      <div class="tag-inserter">
+        <strong style="color:var(--navy); margin-right:2px;">Click any text to edit &bull; Auto-saves to Firebase &bull; Insert Tag:</strong>
+        <button type="button" class="tag-btn t-in" data-insert-tag="in">+ Inside</button>
+        <button type="button" class="tag-btn t-ed" data-insert-tag="ed">+ Toss/Rev</button>
+        <button type="button" class="tag-btn t-kp" data-insert-tag="kp">+ QB Keep</button>
+        <button type="button" class="tag-btn t-ps" data-insert-tag="ps">+ Pass</button>
+        <button type="button" class="tag-btn t-dr" data-insert-tag="dr">+ Direct/RPO</button>
+        <button type="button" class="tag-btn wb" data-insert-badge="A">+ Set A #</button>
+        <button type="button" class="tag-btn wb wb-b" data-insert-badge="B">+ Set B #</button>
+      </div>
+      <div class="scale-control">
+        <label for="fontScaleSlider">Fit Scale:</label>
+        <input id="fontScaleSlider" type="range" min="85" max="110" value="100" />
+        <span id="fontScaleVal">100%</span>
+      </div>
+    </div>
+
+    <!-- 1-Page Printable Call Sheet -->
+    <div class="sheet-scroll-wrap">
+      <div id="callSheet" class="sheet"></div>
     </div>
   </div>
 
-  <!-- 1-PAGE LAMINATED CALL SHEET (Dynamically Rendered & Inline Editable) -->
-  <div id="callSheet" class="sheet"></div>
-
-  <!-- MODAL 1: AI PLAYBOOK & ARMBAND UPDATER -->
-  <div id="aiModal" class="modal-backdrop" onclick="if(event.target===this) closeModal('aiModal')">
+  <!-- =========================================================================
+       MODAL 1: AI PLAYBOOK & ARMBAND UPDATER
+       ========================================================================= -->
+  <div id="aiModal" class="modal-backdrop">
     <div class="modal">
       <div class="modal-header">
         <h2>✨ Update Call Sheet from New Playbook &amp; QB Armband</h2>
-        <button class="modal-close" onclick="closeModal('aiModal')">&times;</button>
+        <button type="button" class="modal-close" data-close-modal="aiModal">&times;</button>
       </div>
       <div class="modal-body">
         <p style="font-size:12px; color:#475569;">
-          Upload your latest <strong>Playbook PDF/Images</strong> and/or <strong>QB Wrist Coach Armband</strong>. Gemini AI will analyze every play, match all wristband numbers, and regenerate your entire 1-page sideline call sheet automatically.
+          Upload your latest <strong>Playbook PDF/Images</strong> and/or <strong>QB Wrist Coach Armband</strong>. Gemini AI will analyze every play, match all wristband numbers, save an automatic cloud backup of your current sheet, and regenerate the entire 1-page sheet.
         </p>
 
         <div class="form-group">
@@ -814,9 +958,9 @@
         </div>
 
         <div class="form-group">
-          <label for="geminiApiKeyInput">4. Gemini API Key (Optional in Canvas &bull; Required on script.google.com)</label>
-          <input type="password" id="geminiApiKeyInput" class="form-input" placeholder="Leave blank in Canvas preview, or paste your Google AI Studio key here..." />
-          <span class="form-hint">Get a free key at <strong>aistudio.google.com</strong>. On Apps Script, you can also save it once as <code>GEMINI_API_KEY</code> in Project Settings &rarr; Script Properties so you never have to retype it.</span>
+          <label for="geminiApiKeyInput">4. Gemini API Key (Optional in Preview &bull; Required on GitHub Pages)</label>
+          <input type="password" id="geminiApiKeyInput" class="form-input" placeholder="Leave blank in Preview, or paste your Google AI Studio key..." />
+          <span class="form-hint">Get a free key at <strong>aistudio.google.com</strong> when hosting on GitHub Pages.</span>
         </div>
 
         <div id="aiStatusBox" class="ai-status-box">
@@ -825,149 +969,226 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-subtle" style="color:#334155; background:#e2e8f0;" onclick="closeModal('aiModal')">Cancel</button>
-        <button id="runAiBtn" class="btn btn-ai" onclick="runAiUpdater()">✨ Analyze &amp; Update Call Sheet</button>
+        <button type="button" class="btn btn-subtle" style="color:#334155; background:#e2e8f0;" data-close-modal="aiModal">Cancel</button>
+        <button id="runAiBtn" type="button" class="btn btn-ai">✨ Analyze &amp; Update Call Sheet</button>
       </div>
     </div>
   </div>
 
-  <!-- MODAL 2: GOOGLE APPS SCRIPT & AUTO-BACKUP SETUP -->
-  <div id="gasModal" class="modal-backdrop" onclick="if(event.target===this) closeModal('gasModal')">
+  <!-- =========================================================================
+       MODAL 2: CLOUD BACKUPS & VERSION HISTORY
+       ========================================================================= -->
+  <div id="backupModal" class="modal-backdrop">
     <div class="modal">
       <div class="modal-header">
-        <h2>☁️ Host on script.google.com + Auto-Save &amp; Backup to Google Drive</h2>
-        <button class="modal-close" onclick="closeModal('gasModal')">&times;</button>
+        <h2>💾 Firebase Cloud Backups &amp; Local Export</h2>
+        <button type="button" class="modal-close" data-close-modal="backupModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="display:flex; gap:8px; align-items:flex-end; flex-wrap:wrap;">
+          <div class="form-group" style="flex:1; min-width:200px;">
+            <label for="backupLabelInput">Snapshot Label (Optional)</label>
+            <input type="text" id="backupLabelInput" class="form-input" placeholder="e.g., Week 3 vs Troy, Pre-Playoff Update..." />
+          </div>
+          <button id="saveCloudBackupBtn" type="button" class="btn btn-backup" style="height:36px;">☁️ Save Cloud Snapshot</button>
+          <button id="downloadJsonBtn" type="button" class="btn btn-subtle" style="height:36px; background:#e2e8f0; color:#1e293b;">⬇️ Download JSON</button>
+        </div>
+
+        <div class="form-group">
+          <label>Saved Cloud Backups (Real-Time from Firebase)</label>
+          <div id="backupListContainer" class="backup-list">
+            <div style="color:#64748b; font-size:12px; padding:8px;">Connect Firebase to view cloud snapshots.</div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-subtle" style="color:#334155; background:#e2e8f0;" data-close-modal="backupModal">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MODAL 3: GITHUB PAGES & FIREBASE SETUP
+       ========================================================================= -->
+  <div id="setupModal" class="modal-backdrop">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>☁️ Host on GitHub Pages + Connect Your Firebase Database</h2>
+        <button type="button" class="modal-close" data-close-modal="setupModal">&times;</button>
       </div>
       <div class="modal-body">
         <p style="font-size:12.5px;">
-          This app is pre-wired to automatically save every edit and create timestamped backups inside your exact Google Drive folder:<br>
-          <strong style="color:var(--navy); word-break:break-all;">Folder ID: 1gi9pKoIjY6a4Z2knMu8xq9Z3RHL0RZL-</strong>
+          Deploy this single file on <strong>GitHub Pages</strong> for free with real-time <strong>Firebase Firestore</strong> auto-save across all your coaches' phones, tablets, and laptops—protected by your password (<code>Shopping90</code>).
         </p>
 
         <ol class="step-list">
-          <li>Go to <strong>script.google.com</strong> and click <strong>New Project</strong> (name it <em>TC JV Call Sheet</em>).</li>
-          <li>Delete everything in <code>Code.gs</code>, then click <strong>Copy Code.gs</strong> below and paste it in.</li>
-          <li>Click the <strong>+</strong> icon next to Files &rarr; choose <strong>HTML</strong> &rarr; name it exactly <code>Index</code> (it creates <code>Index.html</code>).</li>
-          <li>Click <strong>Download Index.html</strong> below (or copy this file), paste all of its code into <code>Index.html</code>, and click <strong>Save (Ctrl+S)</strong>.</li>
-          <li><em>(Optional for AI Updater)</em> In Apps Script, click the ⚙️ <strong>Project Settings</strong> &rarr; <strong>Script Properties</strong> &rarr; Add property <code>GEMINI_API_KEY</code> with your Google AI Studio key.</li>
-          <li>Click <strong>Deploy &rarr; New Deployment &rarr; Web app</strong> &rarr; Execute as: <strong>Me</strong> &rarr; Who has access: <strong>Only myself</strong> (or Anyone with link) &rarr; <strong>Deploy</strong> &amp; authorize Google Drive!</li>
+          <li>Go to <strong>console.firebase.google.com</strong> &rarr; <strong>Create Project</strong> (e.g., <code>tc-jv-playbook</code>).</li>
+          <li>In Firebase, go to <strong>Build &rarr; Authentication &rarr; Sign-in method</strong> and enable <strong>Anonymous</strong>.</li>
+          <li>Go to <strong>Build &rarr; Firestore Database &rarr; Create database</strong> (Start in production mode), then paste the Firestore Rules below under the <strong>Rules</strong> tab and click <strong>Publish</strong>.</li>
+          <li>Go to <strong>Project Settings (&gear;) &rarr; Your apps &rarr; Web (&lt;/&gt;)</strong> &rarr; Register app &rarr; copy your <code>firebaseConfig</code> JSON object and paste it below.</li>
+          <li>Click <strong>⬇️ Download Ready-to-Deploy index.html</strong> below—it automatically bakes your Firebase config right into the file!</li>
+          <li>Upload that <code>index.html</code> to a GitHub repository &rarr; go to <strong>Repo Settings &rarr; Pages</strong> &rarr; Branch: <strong>main / root</strong> &rarr; <strong>Save</strong>. Your live coaching link will be up in ~60 seconds!</li>
         </ol>
 
         <div class="form-group">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <label>Ready-to-Paste <code>Code.gs</code> (Pre-configured for your Drive folder)</label>
-            <button class="btn btn-drive" onclick="copyGasCode()">📋 Copy Code.gs</button>
+          <label for="firebaseConfigInput">Paste Your Firebase Config JSON (Optional here to bake into GitHub index.html)</label>
+          <textarea id="firebaseConfigInput" class="form-textarea mono" placeholder='{
+  "apiKey": "AIzaSy...",
+  "authDomain": "your-project.firebaseapp.com",
+  "projectId": "your-project",
+  "storageBucket": "your-project.firebasestorage.app",
+  "messagingSenderId": "123456789",
+  "appId": "1:123456789:web:abcdef"
+}'></textarea>
+          <div style="display:flex; gap:8px; margin-top:4px; flex-wrap:wrap;">
+            <button id="connectFirebaseBtn" type="button" class="btn btn-cloud">🔌 Connect Now</button>
+            <button id="downloadGithubHtmlBtn" type="button" class="btn btn-print">⬇️ Download Ready-to-Deploy index.html</button>
           </div>
-          <pre id="gasCodePreview" class="code-block"></pre>
         </div>
 
-        <div style="background:#f0fdf4; border:1px solid #86efac; padding:8px 10px; border-radius:6px; font-size:11.5px; color:#166534;">
-          <strong>What gets saved in your Drive folder automatically:</strong><br>
-          &bull; <code>TC_JV_CallSheet_LIVE.json</code> — auto-updates 2 seconds after any edit so your latest sheet loads automatically next time.<br>
-          &bull; <code>Backups/</code> subfolder — every click of <strong>Backup</strong> (and every AI playbook update) saves a timestamped <code>.json</code> + printable <code>.html</code> snapshot!
+        <div class="form-group">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <label>Firestore Security Rules (Paste in Firebase &rarr; Firestore &rarr; Rules)</label>
+            <button id="copyRulesBtn" type="button" class="btn btn-subtle" style="background:#e2e8f0; color:#1e293b; font-size:11px;">📋 Copy Rules</button>
+          </div>
+          <pre id="firestoreRulesPre" class="code-block">rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /artifacts/{appId}/public/data/{document=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}</pre>
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-backup" onclick="downloadStandaloneIndexHtml()">⬇️ Download Index.html</button>
-        <button class="btn btn-subtle" style="color:#334155; background:#e2e8f0;" onclick="closeModal('gasModal')">Done</button>
+        <button type="button" class="btn btn-subtle" style="color:#334155; background:#e2e8f0;" data-close-modal="setupModal">Done</button>
       </div>
     </div>
   </div>
 
-  <!-- MODAL 3: RESET CONFIRMATION -->
-  <div id="resetModal" class="modal-backdrop" onclick="if(event.target===this) closeModal('resetModal')">
+  <!-- =========================================================================
+       MODAL 4: RESET CONFIRMATION
+       ========================================================================= -->
+  <div id="resetModal" class="modal-backdrop">
     <div class="modal" style="max-width:420px;">
       <div class="modal-header">
         <h2>↺ Reset to Default TC JV Playbook?</h2>
-        <button class="modal-close" onclick="closeModal('resetModal')">&times;</button>
+        <button type="button" class="modal-close" data-close-modal="resetModal">&times;</button>
       </div>
       <div class="modal-body">
-        <p>This will restore all wording and plays back to the original 24-play TC JV Playbook &amp; Armband layout. (If connected to Drive, you can click Backup first to keep a copy of your current edits.)</p>
+        <p>This restores all wording and plays back to the original 24-play TC JV Playbook &amp; Armband layout and auto-saves to Firebase. (Tip: Save a Cloud Backup first if you want to keep your current edits.)</p>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-subtle" style="color:#334155; background:#e2e8f0;" onclick="closeModal('resetModal')">Cancel</button>
-        <button class="btn btn-danger" onclick="confirmReset()">Yes, Reset Sheet</button>
+        <button type="button" class="btn btn-subtle" style="color:#334155; background:#e2e8f0;" data-close-modal="resetModal">Cancel</button>
+        <button id="confirmResetBtn" type="button" class="btn btn-danger">Yes, Reset Sheet</button>
       </div>
     </div>
   </div>
 
-  <!-- TOAST NOTIFICATION -->
+  <!-- Toast Notification -->
   <div id="toast" class="toast"></div>
 
-  <script>
-    // =========================================================================
-    // 1. DEFAULT DATA (Exact TC JV 24-Play Call Sheet + Wristband Numbers)
-    // =========================================================================
-    const DRIVE_FOLDER_ID = '1gi9pKoIjY6a4Z2knMu8xq9Z3RHL0RZL-';
+  <!-- =========================================================================
+       APPLICATION LOGIC (ES Module with Firebase 11.6.1 + Gemini 3 Flash)
+       ========================================================================= -->
+  <script type="module">
+    import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      setDoc,
+      addDoc,
+      deleteDoc,
+      collection,
+      onSnapshot
+    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+    // =========================================================================
+    // 1. CONFIGURATION (Coach Password & GitHub Pages Firebase Config)
+    // =========================================================================
+    const COACH_PASSWORD = "Shopping90";
+
+    // When hosting on GitHub Pages, replace the null below with your Firebase
+    // Web App config object (or use the "GitHub & Firebase Setup" button in-app
+    // to paste your config and download a pre-configured index.html automatically).
+    /* GITHUB_FIREBASE_CONFIG_START */
+    let GITHUB_FIREBASE_CONFIG = null;
+    /* GITHUB_FIREBASE_CONFIG_END */
+
+    // Environment globals (automatically injected in Preview; falls back cleanly on GitHub Pages)
+    const APP_ID = typeof __app_id !== "undefined" ? __app_id : "tc-jv-playbook";
+
+    // Default 24-Play TC JV Call Sheet Data (Matched to QB Wrist Coach)
     const DEFAULT_DATA = {
       fontScale: 100,
-      headerTitle: 'TC JV Playbook — Sideline Call Sheet (With Wristband #s)',
-      setALabel: 'Set A: #1&ndash;12',
-      setBLabel: 'Set B: #14&ndash;24',
-      quickKeyNote: 'L/R = Twins &bull; Direct = Snap 4',
-      matrixTitle: '1. Quick-React Sideline Matrix: "If You See This Look &rarr; Yell This Wristband #"',
-      matrixSub: 'Read CB Leverage, Free Safety Depth, LB Motion Response &amp; DE Technique',
-      masterTitle: '2. Complete Master Play Reference — Matched to QB Wrist Coach (Set A: #1&ndash;12 | Set B: #14&ndash;24)',
-      masterSub: '*Note: Wristband Slot #13 is currently blank (R Liz TE Reverse is not on armband)',
+      headerTitle: "TC JV Playbook — Sideline Call Sheet (With Wristband #s)",
+      setALabel: "Set A: #1&ndash;12",
+      setBLabel: "Set B: #14&ndash;24",
+      quickKeyNote: "L/R = Twins &bull; Direct = Snap 4",
+      matrixTitle: "1. Quick-React Sideline Matrix: \"If You See This Look &rarr; Yell This Wristband #\"",
+      matrixSub: "Read CB Leverage, Free Safety Depth, LB Motion Response &amp; DE Technique",
+      masterTitle: "2. Complete Master Play Reference — Matched to QB Wrist Coach (Set A: #1&ndash;12 | Set B: #14&ndash;24)",
+      masterSub: "*Note: Wristband Slot #13 is currently blank (R Liz TE Reverse is not on armband)",
       defensiveMatrix: [
         {
-          lookTitle: 'CB Tight / Press (Strong Side)',
-          lookSub: 'Walked up on Twins or crashing hard on edge',
+          lookTitle: "CB Tight / Press (Strong Side)",
+          lookSub: "Walked up on Twins or crashing hard on edge",
           primaryHtml: '<span class="tag t-ps"><span class="n">#15/16</span> 2/3-Flat</span> (Hit Out/TE) &bull; <span class="tag t-ed"><span class="n">#5/7</span> 38/27 Toss</span>',
           whyHtml: 'Throw over tight CB, or attack away w/ <span class="tag t-in"><span class="n">#3/4</span> 44/43 Ctr</span> or <span class="tag t-in"><span class="n">#1/2</span> Dive</span>.'
         },
         {
-          lookTitle: 'CB Tight / Crashing (Weak Side)',
-          lookSub: 'Weak CB cheats up to blow up 38/27 Toss',
+          lookTitle: "CB Tight / Crashing (Weak Side)",
+          lookSub: "Weak CB cheats up to blow up 38/27 Toss",
           primaryHtml: '<span class="tag t-ps"><span class="n">#14</span> 18 Cross</span> &bull; <span class="tag t-ed"><span class="n">#8</span> L TE Rev</span> &bull; <span class="tag t-kp"><span class="n">#12</span> 18 Keep</span>',
           whyHtml: 'Burn his aggression deep/backside! Also pound strong w/ <span class="tag t-dr"><span class="n">#18/19</span> Direct</span>.'
         },
         {
-          lookTitle: 'CBs Soft / Deep Cushion (7+ yds)',
-          lookSub: 'Secondary bailing or respecting vertical pass',
+          lookTitle: "CBs Soft / Deep Cushion (7+ yds)",
+          lookSub: "Secondary bailing or respecting vertical pass",
           primaryHtml: '<span class="tag t-dr"><span class="n">#22/23</span> 3 Screen</span> &bull; <span class="tag t-ed"><span class="n">#9/10</span> &amp; <span class="n">#5/7</span> Toss</span>',
           whyHtml: 'Take free yards! <span class="tag t-ps"><span class="n">#15/16</span> 2/3-Flat</span> (hit Flat) &amp; <span class="tag t-kp"><span class="n">#11</span> 17 Keep</span> chew cushion.'
         },
         {
-          lookTitle: 'FS Creeping Down / Single-High',
-          lookSub: 'FS playing 7-8 yds / biting on Dive or Liz',
+          lookTitle: "FS Creeping Down / Single-High",
+          lookSub: "FS playing 7-8 yds / biting on Dive or Liz",
           primaryHtml: '<span class="tag t-ps"><span class="n">#24</span> 41 Fake TE GO (Omaha)</span> &bull; <span class="tag t-ps"><span class="n">#17</span> Liz TE GO</span>',
           whyHtml: 'Twin TE seams put FS in 2-on-1 bind! Or <span class="tag t-ps"><span class="n">#14</span> 18 Cross</span> (3 deep flag).'
         },
         {
-          lookTitle: 'Defense Over-Shifts to Twins',
-          lookSub: 'LBs &amp; Safety align heavy to L or R Twin side',
+          lookTitle: "Defense Over-Shifts to Twins",
+          lookSub: "LBs &amp; Safety align heavy to L or R Twin side",
           primaryHtml: '<span class="tag t-ed"><span class="n">#6</span> Wing Rip 38</span> &bull; <span class="tag t-ed"><span class="n">#5/7</span> 38/27 Toss</span> &bull; <span class="tag t-in"><span class="n">#3/4</span> Ctr</span>',
           whyHtml: 'Pre-snap Dbl Wing steals weak edge; <span class="tag t-dr"><span class="n">#20/21</span> 1-Opt Drag</span> punishes weak!'
         },
         {
-          lookTitle: 'LBs Flying w/ Rip or Liz Motion',
-          lookSub: 'M/W/S sprint across box at motion snap',
+          lookTitle: "LBs Flying w/ Rip or Liz Motion",
+          lookSub: "M/W/S sprint across box at motion snap",
           primaryHtml: '<span class="tag t-ps"><span class="n">#14</span> 18 Cross</span> &bull; <span class="tag t-kp"><span class="n">#12</span> 18 Keep</span> &bull; <span class="tag t-ed"><span class="n">#9/10</span> 47/48 Toss</span>',
           whyHtml: 'Hit vacated strong side! <span class="tag t-ed"><span class="n">#8</span> L TE Rev</span> &amp; <span class="tag t-in"><span class="n">#1/2</span> Dive</span> punish early flow.'
         },
         {
-          lookTitle: 'LBs Sitting / Ignoring Motion',
-          lookSub: 'Box stays home; no bump to motion side',
+          lookTitle: "LBs Sitting / Ignoring Motion",
+          lookSub: "Box stays home; no bump to motion side",
           primaryHtml: '<span class="tag t-ed"><span class="n">#6</span> Wing Rip 38</span> &bull; <span class="tag t-ed"><span class="n">#5/7</span> 38/27 Toss</span> &bull; <span class="tag t-kp"><span class="n">#11</span> 17 Keep</span>',
           whyHtml: 'Outnumber the weak edge immediately until LBs are forced to adjust.'
         },
         {
-          lookTitle: 'Heavy / Pinched Box (8-9 Men)',
-          lookSub: '5-3 squeezing A/B gaps; DEs crashing inside',
+          lookTitle: "Heavy / Pinched Box (8-9 Men)",
+          lookSub: "5-3 squeezing A/B gaps; DEs crashing inside",
           primaryHtml: '<span class="tag t-ps"><span class="n">#15/16</span> 2/3-Flat</span> &bull; <span class="tag t-ps"><span class="n">#24</span> Omaha</span> &bull; <span class="tag t-dr"><span class="n">#18/19</span> Direct</span>',
           whyHtml: 'Make them pay through the air, or seal pinched DE &amp; hit <span class="tag t-ed"><span class="n">#9/10</span> 47/48 Toss</span>.'
         },
         {
-          lookTitle: 'Blitz / Over-Pursuit on Direct',
-          lookSub: 'Defense loads strong side vs Direct Snap',
+          lookTitle: "Blitz / Over-Pursuit on Direct",
+          lookSub: "Defense loads strong side vs Direct Snap",
           primaryHtml: '<span class="tag t-dr"><span class="n">#20/21</span> 4 Dir 1-Opt Drag</span> &bull; <span class="tag t-dr"><span class="n">#22/23</span> 3 Screen</span>',
           whyHtml: 'Chasing 4 strong? Flip to QB weak (Run/Drag)! Edge blitzing? Hit quick 3 Screen!'
         },
         {
-          lookTitle: 'DE Crashing Inside vs. Wide DE',
-          lookSub: 'Key the play-side &amp; backside Defensive Ends',
+          lookTitle: "DE Crashing Inside vs. Wide DE",
+          lookSub: "Key the play-side &amp; backside Defensive Ends",
           primaryHtml: 'Crash DE: <span class="tag t-ed"><span class="n">#5/7</span> Toss</span>, <span class="tag t-kp"><span class="n">#11/12</span> Keep</span> &bull; Wide DE: <span class="tag t-in"><span class="n">#3/4</span> Ctr</span>',
           whyHtml: 'Backside DE chasing motion? <span class="tag t-kp"><span class="n">#12</span> 18 Keep</span>, <span class="tag t-ps"><span class="n">#14</span> 18 Cross</span>, or <span class="tag t-ed"><span class="n">#8</span> TE Rev</span>!'
         }
@@ -987,20 +1208,20 @@
         { wbHtml: '<span class="wb wb-b">#20</span> <span class="wb wb-b">#21</span>', playHtml: '<span class="play-name">L / R 4 Direct 1-Option TE Drag</span>', typeHtml: '<span class="tag t-dr">Direct RPO</span> Flip QB; Run/Drg', idealHtml: 'Def ignores weak QB &amp; crashes on #18/#19 Direct! QB reads weak: Run or TE Drag.', avoidHtml: 'Weak CB/OLB squatting directly on QB pitch.', sitHtml: '<strong>2nd &amp; Med / Counter</strong>' },
         { wbHtml: '<span class="wb wb-b">#22</span> <span class="wb wb-b">#23</span>', playHtml: '<span class="play-name">L / R 4 Direct 3 Screen</span>', typeHtml: '<span class="tag t-dr">Direct Scr</span> Fake Dir; Screen', idealHtml: 'Soft strong CB (6+ yds) OR aggressive blitz/DE flying at 4! Wing+TE+OT wall edge.', avoidHtml: 'Strong CB playing press-man on outer wing.', sitHtml: '<strong>1st &amp; 10 / 2nd &amp; Lg</strong>' }
       ],
-      hashTitle: '3. Hash Mark Guide (Attack Wide Field)',
+      hashTitle: "3. Hash Mark Guide (Attack Wide Field)",
       hashGuide: [
         '<strong>LEFT Hash (Wide = RIGHT):</strong><br><span class="tag t-ed">#6 Wing 38</span> <span class="tag t-ed">#5 38 Toss</span> <span class="tag t-ed">#10 48 Toss</span> <span class="tag t-kp">#12 18 Kp</span> <span class="tag t-ps">#14 18 X</span> <span class="tag t-ps">#16 3-Flat</span> <span class="tag t-dr">#19 48 Dir</span> <span class="tag t-dr">#20 L 1-Opt</span> <span class="tag t-dr">#23 R Scr</span>',
         '<strong>RIGHT Hash (Wide = LEFT):</strong><br><span class="tag t-ed">#7 27 Toss</span> <span class="tag t-ed">#9 47 Toss</span> <span class="tag t-ed">#8 L Rev</span> <span class="tag t-kp">#11 17 Kp</span> <span class="tag t-ps">#15 2-Flat</span> <span class="tag t-dr">#18 47 Dir</span> <span class="tag t-dr">#21 R 1-Opt</span> <span class="tag t-dr">#22 L Scr</span>',
         '<strong>Either Hash / Boundary Safe:</strong> <span class="tag t-in">#1/2 Dive</span> <span class="tag t-in">#3/4 Ctr</span> <span class="tag t-ps">#17 Liz TE GO</span> <span class="tag t-ps">#24 Omaha</span>'
       ],
-      ddTitle: '4. Down &amp; Distance Call Sheet',
+      ddTitle: "4. Down &amp; Distance Call Sheet",
       downDistance: [
         '<strong>1st &amp; 10 (Establish &amp; Test):</strong> <span class="tag t-in">#1/2 Dive</span> &bull; <span class="tag t-ed">#6/#7 Toss</span> &bull; <span class="tag t-dr">#18/19 Direct</span> &bull; <span class="tag t-ps">#14 18 Cross</span>',
         '<strong>Short Yardage / GL (1-3 yds):</strong> <span class="tag t-in">#1/2 Dive</span> &bull; <span class="tag t-dr">#18/19 Direct</span> &bull; <span class="tag t-kp">#12 18 Keep</span> &bull; <span class="tag t-ps">#24 Omaha</span>',
         '<strong>2nd/3rd &amp; Medium (4-7 yds):</strong> <span class="tag t-ps">#15/16 Flat</span> &bull; <span class="tag t-ps">#14 18 X</span> &bull; <span class="tag t-dr">#20/21 1-Opt</span> &bull; <span class="tag t-in">#3/4 Ctr</span> &bull; <span class="tag t-kp">#11 17 Kp</span>',
         '<strong>3rd &amp; Long / Chunk (8+ yds):</strong> <span class="tag t-ps">#17 Liz GO</span> &bull; <span class="tag t-ps">#15/16 2/3-Flat</span> &bull; <span class="tag t-dr">#22/23 3 Scr</span> &bull; <span class="tag t-ed">#8 TE Rev</span>'
       ],
-      combosTitle: '5. Chess Match Combos (Setup &rarr; Counterpunch)',
+      combosTitle: "5. Chess Match Combos (Setup &rarr; Counterpunch)",
       combos: [
         '<strong>1. Dive Family:</strong> <span class="tag t-in">#1/2 Dive</span> 2x <span class="arrow">&rarr;</span> FS/LBs creep <span class="arrow">&rarr;</span> <span class="tag t-ps">#24 41 Fake TE GO (Omaha)</span>',
         '<strong>2. Liz Series:</strong> <span class="tag t-ed">#7 27 Toss</span> / <span class="tag t-kp">#11 17 Kp</span> <span class="arrow">&rarr;</span> Flow L <span class="arrow">&rarr;</span> <span class="tag t-kp">#12 18 Keep</span> <span class="arrow">&rarr;</span> CB bites <span class="arrow">&rarr;</span> <span class="tag t-ps">#14 18 Cross</span>',
@@ -1010,74 +1231,421 @@
       ]
     };
 
-    // Deep clone helper
-    function cloneData(obj) {
-      return JSON.parse(JSON.stringify(obj));
-    }
+    // =========================================================================
+    // 2. APPLICATION STATE
+    // =========================================================================
+    const cloneData = (obj) => JSON.parse(JSON.stringify(obj));
 
-    // Active application state (in-memory + synced to Drive on Apps Script)
     let sheetData = cloneData(DEFAULT_DATA);
     let isEditMode = true;
+    let isUnlocked = false;
     let autoSaveTimer = null;
-    const isGasEnv = (typeof google !== 'undefined' && google.script && google.script.run);
+    let toastTimer = null;
+
+    // Firebase runtime handles
+    let fbDb = null;
+    let fbAuth = null;
+    let currentUser = null;
+    let unsubLive = null;
+    let unsubBackups = null;
+    let cloudBackups = [];
+    const clientSessionId = (typeof crypto !== "undefined" && crypto.randomUUID)
+      ? crypto.randomUUID()
+      : "coach-" + Math.random().toString(36).slice(2);
 
     // =========================================================================
-    // 2. RENDERING ENGINE (Fully Inline-Editable)
+    // 3. UI HELPERS (Toast, Status Pill, Modals, Clipboard)
     // =========================================================================
+    function showToast(msg, type = "success") {
+      const t = document.getElementById("toast");
+      t.textContent = msg;
+      t.className = `toast show ${type}`;
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => { t.className = "toast"; }, 3800);
+    }
+
+    function setCloudStatus(state, text) {
+      const dot = document.getElementById("statusDot");
+      const lbl = document.getElementById("statusText");
+      dot.className = "status-dot " + state;
+      lbl.textContent = text;
+    }
+
+    function openModal(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.add("open");
+    }
+
+    function closeModal(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.remove("open");
+    }
+
+    function copyTextToClipboard(text) {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+    }
+
+    function formatTime(ms) {
+      if (!ms) return "Just now";
+      return new Date(ms).toLocaleString([], {
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit"
+      });
+    }
+
+    // =========================================================================
+    // 4. PASSWORD LOGIN GATE
+    // =========================================================================
+    function setupLoginGate() {
+      const form = document.getElementById("loginForm");
+      const pwInput = document.getElementById("loginPasswordInput");
+      const toggleBtn = document.getElementById("togglePwBtn");
+      const errBox = document.getElementById("loginError");
+
+      toggleBtn.addEventListener("click", () => {
+        const isHidden = pwInput.type === "password";
+        pwInput.type = isHidden ? "text" : "password";
+        toggleBtn.textContent = isHidden ? "🙈" : "👁️";
+        pwInput.focus();
+      });
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const entered = pwInput.value.trim();
+
+        if (entered === COACH_PASSWORD) {
+          isUnlocked = true;
+          errBox.textContent = "";
+          pwInput.value = "";
+          document.getElementById("loginGate").classList.add("unlocked");
+          document.body.classList.remove("app-locked");
+          renderSheet();
+          showToast("Playbook unlocked! Connecting to Firebase...", "success");
+          await initFirebaseConnection();
+        } else {
+          errBox.textContent = "Incorrect password. Please try again.";
+          const card = form;
+          card.classList.remove("shake");
+          void card.offsetWidth;
+          card.classList.add("shake");
+          pwInput.select();
+        }
+      });
+
+      // Focus input on page load
+      setTimeout(() => pwInput.focus(), 50);
+    }
+
+    function lockApp() {
+      isUnlocked = false;
+      document.body.classList.add("app-locked");
+      document.getElementById("loginGate").classList.remove("unlocked");
+      document.getElementById("loginPasswordInput").value = "";
+      document.getElementById("loginError").textContent = "";
+      setTimeout(() => document.getElementById("loginPasswordInput").focus(), 50);
+    }
+
+    // =========================================================================
+    // 5. FIREBASE FIRESTORE AUTO-SAVE & REAL-TIME SYNC
+    //    Follows all 3 mandatory rules:
+    //    - Strict path: /artifacts/{appId}/public/data/{collection}
+    //    - Simple collection() queries (sorting done in JS memory)
+    //    - Auth awaited BEFORE any Firestore operations + guarded by currentUser
+    // =========================================================================
+    function resolveFirebaseConfig() {
+      if (GITHUB_FIREBASE_CONFIG && GITHUB_FIREBASE_CONFIG.apiKey && GITHUB_FIREBASE_CONFIG.projectId) {
+        return GITHUB_FIREBASE_CONFIG;
+      }
+      if (typeof __firebase_config !== "undefined" && __firebase_config) {
+        try {
+          return typeof __firebase_config === "string"
+            ? JSON.parse(__firebase_config)
+            : __firebase_config;
+        } catch (e) {
+          return null;
+        }
+      }
+      return null;
+    }
+
+    async function initFirebaseConnection(overrideConfig = null) {
+      const config = overrideConfig || resolveFirebaseConfig();
+      if (!config || !config.apiKey || !config.projectId) {
+        setCloudStatus("", "Local Mode (Add Firebase in Setup)");
+        renderBackupsList();
+        return;
+      }
+
+      try {
+        setCloudStatus("saving", "Authenticating Firebase...");
+
+        // Initialize Firebase app safely (avoid duplicate app initialization)
+        const appName = overrideConfig ? "custom-coach-app-" + Date.now() : "tc-jv-default";
+        const existing = getApps().find((a) => a.name === appName);
+        const app = existing || initializeApp(config, appName);
+
+        fbAuth = getAuth(app);
+        fbDb = getFirestore(app);
+
+        // RULE 3: Authenticate FIRST and await before touching Firestore
+        if (!overrideConfig && typeof __initial_auth_token !== "undefined" && __initial_auth_token) {
+          const cred = await signInWithCustomToken(fbAuth, __initial_auth_token);
+          currentUser = cred.user;
+        } else {
+          const cred = await signInAnonymously(fbAuth);
+          currentUser = cred.user;
+        }
+
+        if (!currentUser) {
+          throw new Error("Anonymous authentication failed.");
+        }
+
+        // Clean up prior listeners if reconnecting
+        if (unsubLive) unsubLive();
+        if (unsubBackups) unsubBackups();
+
+        // RULE 1: Strict public data path for shared team call sheet
+        const liveDocRef = doc(fbDb, "artifacts", APP_ID, "public", "data", "callsheets", "tc_jv_live");
+        const backupsColRef = collection(fbDb, "artifacts", APP_ID, "public", "data", "backups");
+
+        // Listen for real-time updates to the live call sheet
+        unsubLive = onSnapshot(
+          liveDocRef,
+          (snap) => {
+            if (snap.exists()) {
+              const payload = snap.data();
+              // Avoid overwriting the DOM if this very browser just wrote it
+              if (payload.updatedBySession === clientSessionId) {
+                setCloudStatus("connected", "Auto-saved (" + formatTime(payload.updatedAtMs) + ")");
+                return;
+              }
+              if (payload.sheetJson) {
+                try {
+                  sheetData = JSON.parse(payload.sheetJson);
+                  renderSheet();
+                  setCloudStatus("connected", "Synced (" + formatTime(payload.updatedAtMs) + ")");
+                } catch (parseErr) {
+                  setCloudStatus("error", "Corrupt cloud JSON");
+                }
+              }
+            } else {
+              // First-ever launch: seed Firebase with the default 24-play sheet
+              saveLiveSheetToFirebase(true);
+            }
+          },
+          (err) => {
+            setCloudStatus("error", "Firestore read error");
+            showToast("Firebase sync error: " + err.message, "error");
+          }
+        );
+
+        // RULE 2: Simple collection() query with NO orderBy/limit; sort in JS memory
+        unsubBackups = onSnapshot(
+          backupsColRef,
+          (snapshot) => {
+            const list = [];
+            snapshot.forEach((docSnap) => {
+              const d = docSnap.data();
+              list.push({
+                id: docSnap.id,
+                label: d.label || "Call Sheet Snapshot",
+                createdAtMs: d.createdAtMs || 0,
+                sheetJson: d.sheetJson || ""
+              });
+            });
+            // Sort newest first in JavaScript memory
+            list.sort((a, b) => b.createdAtMs - a.createdAtMs);
+            cloudBackups = list;
+            renderBackupsList();
+          },
+          (err) => {
+            showToast("Could not load cloud backups: " + err.message, "error");
+          }
+        );
+      } catch (err) {
+        setCloudStatus("error", "Firebase Setup Needed");
+        showToast("Firebase connection failed: " + err.message, "error");
+      }
+    }
+
+    function scheduleAutoSave() {
+      if (!fbDb || !currentUser) {
+        setCloudStatus("", "Edited locally (Connect Firebase to auto-save)");
+        return;
+      }
+      setCloudStatus("saving", "Saving to Firebase...");
+      clearTimeout(autoSaveTimer);
+      autoSaveTimer = setTimeout(() => {
+        saveLiveSheetToFirebase(false);
+      }, 1000);
+    }
+
+    async function saveLiveSheetToFirebase(isInitialSeed = false) {
+      if (!fbDb || !currentUser) return;
+      try {
+        const now = Date.now();
+        const liveDocRef = doc(fbDb, "artifacts", APP_ID, "public", "data", "callsheets", "tc_jv_live");
+        await setDoc(liveDocRef, {
+          sheetJson: JSON.stringify(sheetData),
+          updatedAtMs: now,
+          updatedBySession: clientSessionId,
+          updatedByUid: currentUser.uid
+        });
+        setCloudStatus("connected", (isInitialSeed ? "Cloud Ready (" : "Auto-saved (") + formatTime(now) + ")");
+      } catch (err) {
+        setCloudStatus("error", "Auto-save failed");
+        showToast("Firebase auto-save failed: " + err.message, "error");
+      }
+    }
+
+    async function createCloudBackup(customLabel = "") {
+      if (!fbDb || !currentUser) {
+        showToast("Firebase is not connected yet. Downloading JSON backup instead.", "warn");
+        downloadJsonBackup();
+        return;
+      }
+      try {
+        setCloudStatus("saving", "Saving cloud snapshot...");
+        const now = Date.now();
+        const label = customLabel.trim() || "Sideline Snapshot";
+        const backupsColRef = collection(fbDb, "artifacts", APP_ID, "public", "data", "backups");
+        await addDoc(backupsColRef, {
+          label,
+          createdAtMs: now,
+          createdByUid: currentUser.uid,
+          sheetJson: JSON.stringify(sheetData)
+        });
+        // Also ensure live sheet is up to date
+        await saveLiveSheetToFirebase(false);
+        showToast(`Saved cloud backup: "${label}"`, "success");
+      } catch (err) {
+        setCloudStatus("error", "Backup failed");
+        showToast("Cloud backup failed: " + err.message, "error");
+      }
+    }
+
+    async function deleteCloudBackup(backupId) {
+      if (!fbDb || !currentUser) return;
+      try {
+        const ref = doc(fbDb, "artifacts", APP_ID, "public", "data", "backups", backupId);
+        await deleteDoc(ref);
+        showToast("Deleted cloud backup.", "success");
+      } catch (err) {
+        showToast("Delete failed: " + err.message, "error");
+      }
+    }
+
+    function renderBackupsList() {
+      const box = document.getElementById("backupListContainer");
+      if (!fbDb || !currentUser) {
+        box.innerHTML = `<div style="color:#64748b; font-size:12px; padding:8px;">Connect Firebase in <strong>GitHub &amp; Firebase Setup</strong> to enable cloud version history. You can still download/load local JSON backups anytime.</div>`;
+        return;
+      }
+      if (cloudBackups.length === 0) {
+        box.innerHTML = `<div style="color:#64748b; font-size:12px; padding:8px;">No cloud snapshots yet. Click <strong>Save Cloud Snapshot</strong> above to archive a version!</div>`;
+        return;
+      }
+      box.innerHTML = cloudBackups.map((b) => `
+        <div class="backup-item">
+          <div class="backup-meta">
+            <strong>${escapeHtml(b.label)}</strong>
+            <span>${formatTime(b.createdAtMs)}</span>
+          </div>
+          <div style="display:flex; gap:6px;">
+            <button type="button" class="btn btn-backup" style="padding:4px 8px; font-size:11px;" data-restore-backup="${b.id}">Restore</button>
+            <button type="button" class="btn btn-danger" style="padding:4px 8px; font-size:11px;" data-delete-backup="${b.id}">&times;</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function downloadJsonBackup() {
+      const blob = new Blob([JSON.stringify(sheetData, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      const ts = new Date().toISOString().slice(0, 16).replace(/[:T]/g, "-");
+      a.href = url;
+      a.download = `TC_JV_CallSheet_${ts}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast("Downloaded local JSON backup.", "success");
+    }
+
+    // =========================================================================
+    // 6. CALL SHEET RENDERING & EVENT-DELEGATED INLINE EDITING
+    // =========================================================================
+    function escapeHtml(str) {
+      return String(str || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+
     function renderSheet() {
-      const ce = isEditMode ? 'contenteditable="true"' : '';
-      const sheet = document.getElementById('callSheet');
+      const ce = isEditMode ? 'contenteditable="true"' : "";
+      const sheet = document.getElementById("callSheet");
 
       const defCardsHtml = sheetData.defensiveMatrix.map((c, idx) => `
         <div class="def-card">
           <div class="row-actions card-del">
-            <button class="mini-act-btn del" title="Delete card" onclick="deleteMatrixCard(${idx})">&times;</button>
+            <button type="button" class="mini-act-btn del" title="Delete card" data-del-matrix="${idx}">&times;</button>
           </div>
           <div class="def-look">
-            <strong ${ce} oninput="updateMatrixField(${idx}, 'lookTitle', this.innerHTML)">${c.lookTitle}</strong>
-            <span ${ce} oninput="updateMatrixField(${idx}, 'lookSub', this.innerHTML)">${c.lookSub}</span>
+            <strong ${ce} data-bind-matrix="${idx}:lookTitle">${c.lookTitle}</strong>
+            <span ${ce} data-bind-matrix="${idx}:lookSub">${c.lookSub}</span>
           </div>
           <div class="def-call">
-            <div class="primary-call" ${ce} oninput="updateMatrixField(${idx}, 'primaryHtml', this.innerHTML)">${c.primaryHtml}</div>
-            <div class="why-note" ${ce} oninput="updateMatrixField(${idx}, 'whyHtml', this.innerHTML)">${c.whyHtml}</div>
+            <div class="primary-call" ${ce} data-bind-matrix="${idx}:primaryHtml">${c.primaryHtml}</div>
+            <div class="why-note" ${ce} data-bind-matrix="${idx}:whyHtml">${c.whyHtml}</div>
           </div>
         </div>
-      `).join('');
+      `).join("");
 
       const playRowsHtml = sheetData.masterPlays.map((p, idx) => `
         <tr>
           <td>
             <div style="display:flex; align-items:center; gap:3px; flex-wrap:wrap;">
-              <span ${ce} oninput="updatePlayField(${idx}, 'wbHtml', this.innerHTML)">${p.wbHtml}</span>
+              <span ${ce} data-bind-play="${idx}:wbHtml">${p.wbHtml}</span>
               <span class="row-actions">
-                <button class="mini-act-btn del" title="Delete play row" onclick="deletePlayRow(${idx})">&times;</button>
+                <button type="button" class="mini-act-btn del" title="Delete play row" data-del-play="${idx}">&times;</button>
               </span>
             </div>
           </td>
-          <td ${ce} oninput="updatePlayField(${idx}, 'playHtml', this.innerHTML)">${p.playHtml}</td>
-          <td ${ce} oninput="updatePlayField(${idx}, 'typeHtml', this.innerHTML)">${p.typeHtml}</td>
-          <td ${ce} oninput="updatePlayField(${idx}, 'idealHtml', this.innerHTML)">${p.idealHtml}</td>
-          <td class="avoid-txt" ${ce} oninput="updatePlayField(${idx}, 'avoidHtml', this.innerHTML)">${p.avoidHtml}</td>
-          <td ${ce} oninput="updatePlayField(${idx}, 'sitHtml', this.innerHTML)">${p.sitHtml}</td>
+          <td ${ce} data-bind-play="${idx}:playHtml">${p.playHtml}</td>
+          <td ${ce} data-bind-play="${idx}:typeHtml">${p.typeHtml}</td>
+          <td ${ce} data-bind-play="${idx}:idealHtml">${p.idealHtml}</td>
+          <td class="avoid-txt" ${ce} data-bind-play="${idx}:avoidHtml">${p.avoidHtml}</td>
+          <td ${ce} data-bind-play="${idx}:sitHtml">${p.sitHtml}</td>
         </tr>
-      `).join('');
+      `).join("");
 
       const buildMiniRows = (listKey) => sheetData[listKey].map((html, idx) => `
-        <div class="row-item" style="display:flex; justify-content:space-between; gap:4px; align-items:flex-start;">
-          <div style="flex:1;" ${ce} oninput="updateListField('${listKey}', ${idx}, this.innerHTML)">${html}</div>
+        <div class="row-item">
+          <div style="flex:1;" ${ce} data-bind-list="${listKey}:${idx}">${html}</div>
           <span class="row-actions">
-            <button class="mini-act-btn del" title="Delete item" onclick="deleteListItem('${listKey}', ${idx})">&times;</button>
+            <button type="button" class="mini-act-btn del" title="Delete item" data-del-list="${listKey}:${idx}">&times;</button>
           </span>
         </div>
-      `).join('');
+      `).join("");
 
       sheet.innerHTML = `
         <div class="header">
-          <div class="header-title" ${ce} oninput="updateRootField('headerTitle', this.innerHTML)">${sheetData.headerTitle}</div>
+          <div class="header-title" ${ce} data-bind-root="headerTitle">${sheetData.headerTitle}</div>
           <div class="header-meta">
-            <span class="meta-pill" ${ce} oninput="updateRootField('setALabel', this.innerHTML)">${sheetData.setALabel}</span>
-            <span class="meta-pill" style="background:#9a3412;" ${ce} oninput="updateRootField('setBLabel', this.innerHTML)">${sheetData.setBLabel}</span>
-            <span class="meta-pill" ${ce} oninput="updateRootField('quickKeyNote', this.innerHTML)">${sheetData.quickKeyNote}</span>
+            <span class="meta-pill" ${ce} data-bind-root="setALabel">${sheetData.setALabel}</span>
+            <span class="meta-pill" style="background:#9a3412;" ${ce} data-bind-root="setBLabel">${sheetData.setBLabel}</span>
+            <span class="meta-pill" ${ce} data-bind-root="quickKeyNote">${sheetData.quickKeyNote}</span>
             <div class="legend">
               <span class="tag t-in">INSIDE</span>
               <span class="tag t-ed">TOSS/REV</span>
@@ -1090,10 +1658,10 @@
 
         <div>
           <div class="sec-title">
-            <span ${ce} oninput="updateRootField('matrixTitle', this.innerHTML)">${sheetData.matrixTitle}</span>
+            <span ${ce} data-bind-root="matrixTitle">${sheetData.matrixTitle}</span>
             <div style="display:flex; align-items:center; gap:6px;">
-              <span class="sec-sub" ${ce} oninput="updateRootField('matrixSub', this.innerHTML)">${sheetData.matrixSub}</span>
-              <span class="row-actions"><button class="mini-act-btn add" onclick="addMatrixCard()">+ Card</button></span>
+              <span class="sec-sub" ${ce} data-bind-root="matrixSub">${sheetData.matrixSub}</span>
+              <span class="row-actions"><button type="button" class="mini-act-btn add" data-add-matrix="1">+ Card</button></span>
             </div>
           </div>
           <div class="def-grid">${defCardsHtml}</div>
@@ -1101,10 +1669,10 @@
 
         <div>
           <div class="sec-title">
-            <span ${ce} oninput="updateRootField('masterTitle', this.innerHTML)">${sheetData.masterTitle}</span>
+            <span ${ce} data-bind-root="masterTitle">${sheetData.masterTitle}</span>
             <div style="display:flex; align-items:center; gap:6px;">
-              <span class="sec-sub" ${ce} oninput="updateRootField('masterSub', this.innerHTML)">${sheetData.masterSub}</span>
-              <span class="row-actions"><button class="mini-act-btn add" onclick="addPlayRow()">+ Play Row</button></span>
+              <span class="sec-sub" ${ce} data-bind-root="masterSub">${sheetData.masterSub}</span>
+              <span class="row-actions"><button type="button" class="mini-act-btn add" data-add-play="1">+ Play Row</button></span>
             </div>
           </div>
           <table class="play-table">
@@ -1125,26 +1693,26 @@
         <div class="bottom-grid">
           <div class="mini-box">
             <div class="sec-title">
-              <span ${ce} oninput="updateRootField('hashTitle', this.innerHTML)">${sheetData.hashTitle}</span>
-              <span class="row-actions"><button class="mini-act-btn add" onclick="addListItem('hashGuide')">+</button></span>
+              <span ${ce} data-bind-root="hashTitle">${sheetData.hashTitle}</span>
+              <span class="row-actions"><button type="button" class="mini-act-btn add" data-add-list="hashGuide">+</button></span>
             </div>
-            <div class="mini-body">${buildMiniRows('hashGuide')}</div>
+            <div class="mini-body">${buildMiniRows("hashGuide")}</div>
           </div>
 
           <div class="mini-box">
             <div class="sec-title">
-              <span ${ce} oninput="updateRootField('ddTitle', this.innerHTML)">${sheetData.ddTitle}</span>
-              <span class="row-actions"><button class="mini-act-btn add" onclick="addListItem('downDistance')">+</button></span>
+              <span ${ce} data-bind-root="ddTitle">${sheetData.ddTitle}</span>
+              <span class="row-actions"><button type="button" class="mini-act-btn add" data-add-list="downDistance">+</button></span>
             </div>
-            <div class="mini-body">${buildMiniRows('downDistance')}</div>
+            <div class="mini-body">${buildMiniRows("downDistance")}</div>
           </div>
 
           <div class="mini-box">
             <div class="sec-title">
-              <span ${ce} oninput="updateRootField('combosTitle', this.innerHTML)">${sheetData.combosTitle}</span>
-              <span class="row-actions"><button class="mini-act-btn add" onclick="addListItem('combos')">+</button></span>
+              <span ${ce} data-bind-root="combosTitle">${sheetData.combosTitle}</span>
+              <span class="row-actions"><button type="button" class="mini-act-btn add" data-add-list="combos">+</button></span>
             </div>
-            <div class="mini-body">${buildMiniRows('combos')}</div>
+            <div class="mini-body">${buildMiniRows("combos")}</div>
           </div>
         </div>
       `;
@@ -1152,260 +1720,51 @@
       applyFontScale(sheetData.fontScale || 100);
     }
 
-    // =========================================================================
-    // 3. INLINE EDITING & STRUCTURAL MUTATIONS
-    // =========================================================================
-    function updateRootField(key, val) {
-      sheetData[key] = val;
-      scheduleAutoSave();
-    }
-    function updateMatrixField(idx, key, val) {
-      sheetData.defensiveMatrix[idx][key] = val;
-      scheduleAutoSave();
-    }
-    function updatePlayField(idx, key, val) {
-      sheetData.masterPlays[idx][key] = val;
-      scheduleAutoSave();
-    }
-    function updateListField(listKey, idx, val) {
-      sheetData[listKey][idx] = val;
-      scheduleAutoSave();
-    }
-
-    function addMatrixCard() {
-      sheetData.defensiveMatrix.push({
-        lookTitle: 'New Defensive Look',
-        lookSub: 'Describe alignment or tendency',
-        primaryHtml: '<span class="tag t-in"><span class="n">#1</span> New Play Call</span>',
-        whyHtml: 'Short coaching key or secondary counter.'
-      });
-      renderSheet();
-      scheduleAutoSave();
-      showToast('Added new defensive reaction card', 'success');
-    }
-
-    function deleteMatrixCard(idx) {
-      sheetData.defensiveMatrix.splice(idx, 1);
-      renderSheet();
-      scheduleAutoSave();
-    }
-
-    function addPlayRow() {
-      sheetData.masterPlays.push({
-        wbHtml: '<span class="wb">#13</span>',
-        playHtml: '<span class="play-name">New Play Name</span>',
-        typeHtml: '<span class="tag t-ed">Concept</span> Action',
-        idealHtml: 'Describe ideal defensive look.',
-        avoidHtml: 'Describe look to avoid.',
-        sitHtml: '<strong>1st &amp; 10</strong>'
-      });
-      renderSheet();
-      scheduleAutoSave();
-      showToast('Added new play row', 'success');
-    }
-
-    function deletePlayRow(idx) {
-      sheetData.masterPlays.splice(idx, 1);
-      renderSheet();
-      scheduleAutoSave();
-    }
-
-    function addListItem(listKey) {
-      sheetData[listKey].push('<strong>New Situation:</strong> <span class="tag t-in">#1 Play</span>');
-      renderSheet();
-      scheduleAutoSave();
-    }
-
-    function deleteListItem(listKey, idx) {
-      sheetData[listKey].splice(idx, 1);
-      renderSheet();
-      scheduleAutoSave();
-    }
-
-    function toggleEditMode() {
-      isEditMode = !isEditMode;
-      const btn = document.getElementById('toggleEditBtn');
-      const bar = document.getElementById('editHelperBar');
-      document.body.classList.toggle('editing-active', isEditMode);
-      bar.classList.toggle('hidden', !isEditMode);
-      btn.textContent = isEditMode ? '✏️ Edit Mode: ON' : '🔒 Edit Mode: OFF';
-      btn.className = isEditMode ? 'btn btn-edit-on' : 'btn btn-edit-off';
-      renderSheet();
-    }
-
-    function updateFontScale(val) {
-      sheetData.fontScale = Number(val);
-      applyFontScale(sheetData.fontScale);
-      scheduleAutoSave();
-    }
-
     function applyFontScale(val) {
-      document.getElementById('fontScaleSlider').value = val;
-      document.getElementById('fontScaleVal').textContent = val + '%';
-      const sheet = document.getElementById('callSheet');
-      sheet.style.zoom = (val / 100);
+      const slider = document.getElementById("fontScaleSlider");
+      const label = document.getElementById("fontScaleVal");
+      const sheet = document.getElementById("callSheet");
+      slider.value = val;
+      label.textContent = val + "%";
+      sheet.style.zoom = val / 100;
     }
 
-    // Insert formatted play tag at active cursor inside contenteditable
     function insertStyledTag(family) {
       const sel = window.getSelection();
       if (!sel || !sel.rangeCount) {
-        showToast('Click inside any text cell on the sheet first!', 'warn');
+        showToast("Click inside any editable text cell on the sheet first!", "warn");
         return;
       }
       const anchor = sel.anchorNode;
       const editableParent = anchor && (anchor.nodeType === 1 ? anchor : anchor.parentElement)?.closest('[contenteditable="true"]');
       if (!editableParent) {
-        showToast('Click inside any text cell on the sheet first!', 'warn');
+        showToast("Click inside any editable text cell on the sheet first!", "warn");
         return;
       }
       const html = `&nbsp;<span class="tag t-${family}"><span class="n">#0</span> Play</span>&nbsp;`;
-      document.execCommand('insertHTML', false, html);
-      editableParent.dispatchEvent(new Event('input', { bubbles: true }));
+      document.execCommand("insertHTML", false, html);
+      editableParent.dispatchEvent(new Event("input", { bubbles: true }));
     }
 
     function insertBadge(set) {
       const sel = window.getSelection();
       if (!sel || !sel.rangeCount) {
-        showToast('Click inside a WB # cell first!', 'warn');
+        showToast("Click inside a WB # cell first!", "warn");
         return;
       }
       const anchor = sel.anchorNode;
       const editableParent = anchor && (anchor.nodeType === 1 ? anchor : anchor.parentElement)?.closest('[contenteditable="true"]');
       if (!editableParent) {
-        showToast('Click inside a WB # cell first!', 'warn');
+        showToast("Click inside a WB # cell first!", "warn");
         return;
       }
-      const cls = set === 'B' ? 'wb wb-b' : 'wb';
-      document.execCommand('insertHTML', false, `&nbsp;<span class="${cls}">#0</span>&nbsp;`);
-      editableParent.dispatchEvent(new Event('input', { bubbles: true }));
-    }
-
-    function prepareAndPrint() {
-      // Remove focus outline before printing
-      if (document.activeElement) document.activeElement.blur();
-      window.print();
-    }
-
-    function confirmReset() {
-      sheetData = cloneData(DEFAULT_DATA);
-      renderSheet();
-      closeModal('resetModal');
-      scheduleAutoSave();
-      showToast('Call sheet restored to original TC JV Playbook', 'success');
+      const cls = set === "B" ? "wb wb-b" : "wb";
+      document.execCommand("insertHTML", false, `&nbsp;<span class="${cls}">#0</span>&nbsp;`);
+      editableParent.dispatchEvent(new Event("input", { bubbles: true }));
     }
 
     // =========================================================================
-    // 4. GOOGLE DRIVE AUTO-SAVE & BACKUP (Apps Script + Offline JSON Fallback)
-    // =========================================================================
-    function setStatus(state, text) {
-      const dot = document.getElementById('statusDot');
-      const lbl = document.getElementById('statusText');
-      dot.className = 'status-dot ' + state;
-      lbl.textContent = text;
-    }
-
-    function scheduleAutoSave() {
-      if (!isGasEnv) {
-        setStatus('', 'Unsaved edits (Use Backup or Apps Script)');
-        return;
-      }
-      setStatus('saving', 'Saving to Drive...');
-      clearTimeout(autoSaveTimer);
-      autoSaveTimer = setTimeout(() => {
-        google.script.run
-          .withSuccessHandler((res) => {
-            setStatus('connected', 'Auto-saved to Drive (' + res.timestamp + ')');
-          })
-          .withFailureHandler((err) => {
-            setStatus('', 'Drive save error');
-            showToast('Drive Auto-Save failed: ' + err.message, 'error');
-          })
-          .saveLiveSheet(JSON.stringify(sheetData, null, 2));
-      }, 1800);
-    }
-
-    function handleBackupClick() {
-      if (isGasEnv) {
-        setStatus('saving', 'Creating Drive Backup...');
-        const printableSnapshot = buildPrintableSnapshotHtml();
-        google.script.run
-          .withSuccessHandler((res) => {
-            setStatus('connected', 'Backed up to Drive (' + res.timestamp + ')');
-            showToast('Saved backup snapshot: ' + res.backupName + ' inside Backups/', 'success');
-          })
-          .withFailureHandler((err) => {
-            setStatus('connected', 'Drive Connected');
-            showToast('Backup failed: ' + err.message, 'error');
-          })
-          .createBackupSnapshot(JSON.stringify(sheetData, null, 2), printableSnapshot);
-      } else {
-        // Download JSON backup locally when in Canvas preview
-        const blob = new Blob([JSON.stringify(sheetData, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        const ts = new Date().toISOString().slice(0, 16).replace(/[:T]/g, '-');
-        a.href = url;
-        a.download = `TC_JV_CallSheet_Backup_${ts}.json`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        showToast('Downloaded JSON backup! Deploy to script.google.com for auto-Drive backups.', 'success');
-      }
-    }
-
-    function triggerJsonImport() {
-      document.getElementById('jsonImportInput').click();
-    }
-
-    function handleJsonImport(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        try {
-          const parsed = JSON.parse(e.target.result);
-          if (!parsed.defensiveMatrix || !parsed.masterPlays) {
-            throw new Error('Invalid call sheet JSON format.');
-          }
-          sheetData = parsed;
-          renderSheet();
-          scheduleAutoSave();
-          showToast('Loaded call sheet from ' + file.name, 'success');
-        } catch (err) {
-          showToast('Could not read JSON: ' + err.message, 'error');
-        }
-      };
-      reader.readAsText(file);
-      event.target.value = '';
-    }
-
-    function buildPrintableSnapshotHtml() {
-      const styles = document.querySelector('style').innerHTML;
-      const wasEditing = isEditMode;
-      if (wasEditing) { isEditMode = false; renderSheet(); }
-      const sheetMarkup = document.getElementById('callSheet').outerHTML;
-      if (wasEditing) { isEditMode = true; renderSheet(); }
-      const safeTitle = sheetData.headerTitle.replace(/<[^>]+>/g, '');
-      // Split document tags so Google Apps Script's HTML parser never breaks the script block
-      return [
-        '<' + '!DOCTYPE html>',
-        '<' + 'html lang="en">',
-        '<' + 'head>',
-        '<' + 'meta charset="UTF-8">',
-        '<' + 'title>' + safeTitle + '<' + '/title>',
-        '<' + 'style>' + styles + '<' + '/style>',
-        '<' + '/head>',
-        '<' + 'body style="background:#fff;padding:0;">',
-        sheetMarkup,
-        '<' + '/body>',
-        '<' + '/html>'
-      ].join('');
-    }
-
-    // =========================================================================
-    // 5. GEMINI AI PLAYBOOK & ARMBAND UPDATER
+    // 7. GEMINI AI PLAYBOOK & ARMBAND UPDATER (gemini-3-flash-preview)
     // =========================================================================
     const CALLSHEET_SCHEMA = {
       type: "OBJECT",
@@ -1418,7 +1777,7 @@
         masterSub: { type: "STRING" },
         defensiveMatrix: {
           type: "ARRAY",
-          description: "Exactly 10 concise sideline reaction cards (2 cols x 5 rows) covering tight CBs, soft CBs, single-high FS, over-shifts, LB motion response, pinched box, blitzes, and DE techniques.",
+          description: "Exactly 10 concise sideline reaction cards (2 cols x 5 rows).",
           items: {
             type: "OBJECT",
             properties: {
@@ -1429,10 +1788,10 @@
                 items: {
                   type: "OBJECT",
                   properties: {
-                    num: { type: "STRING", description: "Wristband # like #15/16 or #5" },
-                    label: { type: "STRING", description: "Short play name" },
+                    num: { type: "STRING" },
+                    label: { type: "STRING" },
                     family: { type: "STRING", enum: ["in", "ed", "kp", "ps", "dr"] },
-                    extra: { type: "STRING", description: "Optional short note e.g. (Hit Out)" }
+                    extra: { type: "STRING" }
                   },
                   required: ["num", "label", "family"]
                 }
@@ -1444,7 +1803,7 @@
         },
         masterPlays: {
           type: "ARRAY",
-          description: "11 to 14 grouped rows covering every play in the playbook & wristband so it fits on 1 laminated page.",
+          description: "11 to 14 grouped rows covering every play in the playbook & wristband so it fits on 1 page.",
           items: {
             type: "OBJECT",
             properties: {
@@ -1472,7 +1831,6 @@
         },
         hashGuide: {
           type: "ARRAY",
-          description: "3 items: Left Hash (Wide=Right), Right Hash (Wide=Left), Either Hash",
           items: {
             type: "OBJECT",
             properties: {
@@ -1495,7 +1853,6 @@
         },
         downDistance: {
           type: "ARRAY",
-          description: "4 items: 1st & 10, Short Yardage / GL, 2nd/3rd & Medium, 3rd & Long",
           items: {
             type: "OBJECT",
             properties: {
@@ -1518,7 +1875,6 @@
         },
         combos: {
           type: "ARRAY",
-          description: "5 setup-to-counterpunch sequences",
           items: {
             type: "OBJECT",
             properties: {
@@ -1536,27 +1892,19 @@
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = () => {
-          const result = reader.result;
-          const base64 = result.split(',')[1];
-          resolve({ mimeType: file.type || 'application/pdf', data: base64, name: file.name });
+          const base64 = reader.result.split(",")[1];
+          resolve({ mimeType: file.type || "application/pdf", data: base64, name: file.name });
         };
         reader.onerror = reject;
         reader.readAsDataURL(file);
       });
     }
 
-    function escapeHtml(str) {
-      return String(str || '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;');
-    }
-
     function convertAiJsonToSheetData(ai) {
       const renderTag = (p) => {
-        const fam = ['in','ed','kp','ps','dr'].includes(p.family) ? p.family : 'in';
-        const numPart = p.num ? `<span class="n">${escapeHtml(p.num)}</span> ` : '';
-        const extra = p.extra ? ` ${escapeHtml(p.extra)}` : '';
+        const fam = ["in", "ed", "kp", "ps", "dr"].includes(p.family) ? p.family : "in";
+        const numPart = p.num ? `<span class="n">${escapeHtml(p.num)}</span> ` : "";
+        const extra = p.extra ? ` ${escapeHtml(p.extra)}` : "";
         return `<span class="tag t-${fam}">${numPart}${escapeHtml(p.label)}</span>${extra}`;
       };
 
@@ -1569,46 +1917,46 @@
         matrixTitle: sheetData.matrixTitle,
         matrixSub: escapeHtml(ai.matrixSub || sheetData.matrixSub),
         masterTitle: `2. Complete Master Play Reference — Matched to QB Wrist Coach (${escapeHtml(ai.setALabel)} | ${escapeHtml(ai.setBLabel)})`,
-        masterSub: escapeHtml(ai.masterSub || ''),
-        defensiveMatrix: (ai.defensiveMatrix || []).map(c => ({
+        masterSub: escapeHtml(ai.masterSub || ""),
+        defensiveMatrix: (ai.defensiveMatrix || []).map((c) => ({
           lookTitle: escapeHtml(c.lookTitle),
           lookSub: escapeHtml(c.lookSub),
-          primaryHtml: (c.primaryPlays || []).map(renderTag).join(' &bull; '),
+          primaryHtml: (c.primaryPlays || []).map(renderTag).join(" &bull; "),
           whyHtml: escapeHtml(c.whyNote)
         })),
-        masterPlays: (ai.masterPlays || []).map(p => ({
-          wbHtml: (p.badges || []).map(b => {
-            const cls = b.set === 'B' ? 'wb wb-b' : (b.set === 'open' ? 'wb wb-open' : 'wb');
+        masterPlays: (ai.masterPlays || []).map((p) => ({
+          wbHtml: (p.badges || []).map((b) => {
+            const cls = b.set === "B" ? "wb wb-b" : (b.set === "open" ? "wb wb-open" : "wb");
             return `<span class="${cls}">${escapeHtml(b.text)}</span>`;
-          }).join(' '),
+          }).join(" "),
           playHtml: `<span class="play-name">${escapeHtml(p.playName)}</span>`,
-          typeHtml: `<span class="tag t-${p.family || 'in'}">${escapeHtml(p.tagLabel)}</span> ${escapeHtml(p.actionNote)}`,
+          typeHtml: `<span class="tag t-${p.family || "in"}">${escapeHtml(p.tagLabel)}</span> ${escapeHtml(p.actionNote)}`,
           idealHtml: escapeHtml(p.idealLook),
           avoidHtml: escapeHtml(p.avoidWhen),
           sitHtml: `<strong>${escapeHtml(p.bestSituation)}</strong>`
         })),
         hashTitle: sheetData.hashTitle,
         hashGuide: (ai.hashGuide || []).map((h, i) => {
-          const br = i < 2 ? '<br>' : ' ';
-          return `<strong>${escapeHtml(h.title)}:</strong>${br}` + (h.plays || []).map(renderTag).join(' ');
+          const br = i < 2 ? "<br>" : " ";
+          return `<strong>${escapeHtml(h.title)}:</strong>${br}` + (h.plays || []).map(renderTag).join(" ");
         }),
         ddTitle: sheetData.ddTitle,
-        downDistance: (ai.downDistance || []).map(d =>
-          `<strong>${escapeHtml(d.title)}:</strong> ` + (d.plays || []).map(renderTag).join(' &bull; ')
+        downDistance: (ai.downDistance || []).map((d) =>
+          `<strong>${escapeHtml(d.title)}:</strong> ` + (d.plays || []).map(renderTag).join(" &bull; ")
         ),
         combosTitle: sheetData.combosTitle,
-        combos: (ai.combos || []).map(c =>
+        combos: (ai.combos || []).map((c) =>
           `<strong>${escapeHtml(c.title)}</strong> ${escapeHtml(c.description).replace(/->/g, '<span class="arrow">&rarr;</span>')}`
         )
       };
     }
 
     function setAiStatus(msg, isError = false, loading = true) {
-      const box = document.getElementById('aiStatusBox');
-      const sp = document.getElementById('aiSpinner');
-      const txt = document.getElementById('aiStatusText');
-      box.className = 'ai-status-box show' + (isError ? ' error' : '');
-      sp.style.display = loading ? 'block' : 'none';
+      const box = document.getElementById("aiStatusBox");
+      const sp = document.getElementById("aiSpinner");
+      const txt = document.getElementById("aiStatusText");
+      box.className = "ai-status-box show" + (isError ? " error" : "");
+      sp.style.display = loading ? "block" : "none";
       txt.textContent = msg;
     }
 
@@ -1618,7 +1966,7 @@
         const res = await fetch(url, options);
         if (res.ok) return res;
         if (attempt < maxRetries && (res.status === 429 || res.status >= 500)) {
-          await new Promise(r => setTimeout(r, delay));
+          await new Promise((r) => setTimeout(r, delay));
           delay *= 2;
           continue;
         }
@@ -1628,19 +1976,19 @@
     }
 
     async function runAiUpdater() {
-      const pbFiles = Array.from(document.getElementById('playbookFile').files);
-      const abFiles = Array.from(document.getElementById('armbandFile').files);
-      const coachNotes = document.getElementById('coachNotes').value.trim();
-      const enteredKey = document.getElementById('geminiApiKeyInput').value.trim();
-      const btn = document.getElementById('runAiBtn');
+      const pbFiles = Array.from(document.getElementById("playbookFile").files);
+      const abFiles = Array.from(document.getElementById("armbandFile").files);
+      const coachNotes = document.getElementById("coachNotes").value.trim();
+      const enteredKey = document.getElementById("geminiApiKeyInput").value.trim();
+      const btn = document.getElementById("runAiBtn");
 
       if (pbFiles.length === 0 && abFiles.length === 0 && !coachNotes) {
-        setAiStatus('Please upload a Playbook PDF/image, an Armband PDF/image, or enter coaching instructions.', true, false);
+        setAiStatus("Please upload a Playbook PDF/image, an Armband PDF/image, or enter coaching instructions.", true, false);
         return;
       }
 
       btn.disabled = true;
-      setAiStatus('Reading uploaded files...', false, true);
+      setAiStatus("Reading uploaded files...", false, true);
 
       try {
         const parts = [];
@@ -1661,268 +2009,366 @@ Analyze the uploaded Playbook and/or QB Armband files (plus the current call she
 CRITICAL RULES:
 - Match exact wristband play numbers from the uploaded QB Armband! Clearly distinguish Set A vs Set B badges. If any play in the playbook is missing from the armband, flag it as "--*" (open) and note it in masterSub.
 - Keep text punchy and compact so the entire call sheet prints on ONE US Letter landscape page.
-- Color family codes: "in" = Inside Run (Dive/Counter/Iso/Power), "ed" = Outside Run (Toss/Sweep/Reverse/Jet), "kp" = QB Keep/Boot Run, "ps" = Pass/Play-Action, "dr" = Direct Snap / RPO / Screen / Trick.
-- Coach's extra instructions: ${coachNotes || 'None'}
-- Current Sheet Summary (for reference if updating incrementally): ${JSON.stringify(sheetData.masterPlays.map(p => p.wbHtml + ' ' + p.playHtml)).slice(0, 1500)}`;
+- Color family codes: "in" = Inside Run, "ed" = Outside Run (Toss/Sweep/Reverse), "kp" = QB Keep/Boot Run, "ps" = Pass/Play-Action, "dr" = Direct Snap / RPO / Screen.
+- Coach's extra instructions: ${coachNotes || "None"}
+- Current Sheet Summary: ${JSON.stringify(sheetData.masterPlays.map((p) => p.wbHtml + " " + p.playHtml)).slice(0, 1500)}`;
 
         parts.push({ text: promptText });
 
         const payload = {
-          contents: [{ role: 'user', parts }],
+          contents: [{ role: "user", parts }],
           generationConfig: {
-            responseMimeType: 'application/json',
+            responseMimeType: "application/json",
             responseSchema: CALLSHEET_SCHEMA
           }
         };
 
-        // If on Google Apps Script and user did not type a key, check Script Properties via Code.gs
-        let apiKey = enteredKey || "";
-        if (isGasEnv && !apiKey) {
-          setAiStatus('Fetching saved Gemini key from Apps Script Properties...', false, true);
-          apiKey = await new Promise((resolve, reject) => {
-            google.script.run
-              .withSuccessHandler(resolve)
-              .withFailureHandler(reject)
-              .getGeminiApiKey();
-          });
-          if (!apiKey) {
-            throw new Error('No Gemini API key found. Paste your key in field #4 or save GEMINI_API_KEY in Apps Script Project Settings.');
-          }
-        }
-
-        setAiStatus('Analyzing plays & wristband numbers with Gemini 3 Flash...', false, true);
+        const apiKey = enteredKey || "";
         const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
 
+        setAiStatus("Analyzing plays & wristband numbers with Gemini 3 Flash...", false, true);
         const response = await fetchWithBackoff(apiUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
         });
 
         const result = await response.json();
         const jsonText = result?.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (!jsonText) throw new Error('Gemini returned an empty response. Please try again.');
+        if (!jsonText) throw new Error("Gemini returned an empty response. Please try again.");
 
         const parsedAi = JSON.parse(jsonText);
 
-        // Auto-backup previous version to Drive before overwriting (when on Apps Script)
-        if (isGasEnv) {
-          setAiStatus('Backing up previous version to Google Drive before applying updates...', false, true);
-          await new Promise((resolve) => {
-            google.script.run
-              .withSuccessHandler(resolve)
-              .withFailureHandler(resolve)
-              .createBackupSnapshot(JSON.stringify(sheetData, null, 2), buildPrintableSnapshotHtml());
-          });
+        // Auto-backup current sheet to Firebase before applying AI changes
+        if (fbDb && currentUser) {
+          setAiStatus("Saving automatic Firebase backup before updating...", false, true);
+          await createCloudBackup("Auto-Backup Before AI Playbook Update");
         }
 
         sheetData = convertAiJsonToSheetData(parsedAi);
         renderSheet();
         scheduleAutoSave();
 
-        closeModal('aiModal');
-        document.getElementById('aiStatusBox').className = 'ai-status-box';
-        showToast('Call sheet updated from your uploaded files!', 'success');
+        closeModal("aiModal");
+        document.getElementById("aiStatusBox").className = "ai-status-box";
+        showToast("Call sheet updated and auto-saved!", "success");
       } catch (err) {
-        setAiStatus(err.message || 'Failed to update call sheet.', true, false);
+        setAiStatus(err.message || "Failed to update call sheet.", true, false);
       } finally {
         btn.disabled = false;
       }
     }
 
     // =========================================================================
-    // 6. APPS SCRIPT CODE.GS GENERATOR & UTILITIES
+    // 8. DOWNLOAD PRE-CONFIGURED INDEX.HTML FOR GITHUB PAGES
     // =========================================================================
-    const GAS_CODE_SOURCE = `// ============================================================================
-// TC JV Sideline Call Sheet — Google Apps Script Backend (Code.gs)
-// Automatically saves & backs up to your Google Drive folder
-// ============================================================================
-const DRIVE_FOLDER_ID = '${DRIVE_FOLDER_ID}';
-const LIVE_FILENAME   = 'TC_JV_CallSheet_LIVE.json';
-const BACKUP_SUBFOLDER = 'Backups';
-
-/**
- * Serves the interactive 1-page call sheet web app (Index.html)
- */
-function doGet() {
-  return HtmlService.createHtmlOutputFromFile('Index')
-    .setTitle('TC JV Sideline Call Sheet')
-    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
-    .addMetaTag('viewport', 'width=device-width, initial-scale=1');
-}
-
-/**
- * Loads the latest auto-saved call sheet JSON from your Drive folder on startup
- */
-function loadLatestSheet() {
-  var folder = DriveApp.getFolderById(DRIVE_FOLDER_ID);
-  var files = folder.getFilesByName(LIVE_FILENAME);
-  if (files.hasNext()) {
-    var file = files.next();
-    return {
-      found: true,
-      data: file.getBlob().getDataAsString(),
-      timestamp: Utilities.formatDate(file.getLastUpdated(), Session.getScriptTimeZone(), 'MMM d, h:mm a')
-    };
-  }
-  return { found: false };
-}
-
-/**
- * Auto-saves the current call sheet JSON into your Drive folder
- */
-function saveLiveSheet(jsonString) {
-  var folder = DriveApp.getFolderById(DRIVE_FOLDER_ID);
-  var files = folder.getFilesByName(LIVE_FILENAME);
-  if (files.hasNext()) {
-    files.next().setContent(jsonString);
-  } else {
-    folder.createFile(LIVE_FILENAME, jsonString, MimeType.PLAIN_TEXT);
-  }
-  return {
-    success: true,
-    timestamp: Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'MMM d, h:mm a')
-  };
-}
-
-/**
- * Creates a timestamped JSON + Printable HTML backup inside Backups/ in your Drive folder
- */
-function createBackupSnapshot(jsonString, printableHtml) {
-  saveLiveSheet(jsonString);
-  var folder = DriveApp.getFolderById(DRIVE_FOLDER_ID);
-  var subIter = folder.getFoldersByName(BACKUP_SUBFOLDER);
-  var backupFolder = subIter.hasNext() ? subIter.next() : folder.createFolder(BACKUP_SUBFOLDER);
-
-  var tz = Session.getScriptTimeZone();
-  var stamp = Utilities.formatDate(new Date(), tz, 'yyyy-MM-dd_HH-mm-ss');
-  var jsonName = 'TC_JV_CallSheet_' + stamp + '.json';
-  var htmlName = 'TC_JV_CallSheet_Printable_' + stamp + '.html';
-
-  backupFolder.createFile(jsonName, jsonString, MimeType.PLAIN_TEXT);
-  backupFolder.createFile(htmlName, printableHtml, MimeType.HTML);
-
-  return {
-    success: true,
-    backupName: htmlName,
-    timestamp: Utilities.formatDate(new Date(), tz, 'MMM d, h:mm a')
-  };
-}
-
-/**
- * Optional: Reads GEMINI_API_KEY from Project Settings -> Script Properties
- */
-function getGeminiApiKey() {
-  return PropertiesService.getScriptProperties().getProperty('GEMINI_API_KEY') || '';
-}`;
-
-    function copyTextToClipboard(text) {
-      const ta = document.createElement('textarea');
-      ta.value = text;
-      ta.style.position = 'fixed';
-      ta.style.opacity = '0';
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand('copy');
-      document.body.removeChild(ta);
+    function parseUserFirebaseConfigInput() {
+      const raw = document.getElementById("firebaseConfigInput").value.trim();
+      if (!raw) return null;
+      // Allow users to paste either pure JSON or the JS object snippet from Firebase Console
+      let cleaned = raw
+        .replace(/const\s+firebaseConfig\s*=\s*/i, "")
+        .replace(/;\s*$/, "")
+        .trim();
+      try {
+        return JSON.parse(cleaned);
+      } catch (e) {
+        // Attempt to quote unquoted JS object keys (e.g., apiKey: "...")
+        const jsonified = cleaned
+          .replace(/(['"])?([a-zA-Z0-9_]+)(['"])?\s*:/g, '"$2":')
+          .replace(/'/g, '"')
+          .replace(/,\s*}/g, "}");
+        return JSON.parse(jsonified);
+      }
     }
 
-    function copyGasCode() {
-      copyTextToClipboard(GAS_CODE_SOURCE);
-      showToast('Copied Code.gs! Paste it into script.google.com', 'success');
-    }
+    function downloadGithubIndexHtml() {
+      let bakedConfig = GITHUB_FIREBASE_CONFIG;
+      const raw = document.getElementById("firebaseConfigInput").value.trim();
+      if (raw) {
+        try {
+          bakedConfig = parseUserFirebaseConfigInput();
+        } catch (err) {
+          showToast("Firebase Config format is invalid. Please paste the JSON object from Firebase Console.", "error");
+          return;
+        }
+      }
 
-    function downloadStandaloneIndexHtml() {
+      // Clone clean DOM for export
       const cloneDoc = document.documentElement.cloneNode(true);
-      cloneDoc.querySelectorAll('.modal-backdrop').forEach(m => m.classList.remove('open'));
-      const toastEl = cloneDoc.querySelector('#toast');
-      if (toastEl) toastEl.className = 'toast';
-      // Clear dynamically populated containers so the downloaded Index.html stays clean
-      const clonedSheet = cloneDoc.querySelector('#callSheet');
-      if (clonedSheet) clonedSheet.innerHTML = '';
-      const clonedGas = cloneDoc.querySelector('#gasCodePreview');
-      if (clonedGas) clonedGas.textContent = '';
+      cloneDoc.querySelectorAll(".modal-backdrop").forEach((m) => m.classList.remove("open"));
+      const bodyEl = cloneDoc.querySelector("body");
+      if (bodyEl) bodyEl.className = "app-locked editing-active";
+      const gateEl = cloneDoc.querySelector("#loginGate");
+      if (gateEl) gateEl.className = "login-gate";
+      const sheetEl = cloneDoc.querySelector("#callSheet");
+      if (sheetEl) sheetEl.innerHTML = "";
+      const toastEl = cloneDoc.querySelector("#toast");
+      if (toastEl) toastEl.className = "toast";
 
-      const htmlString = '<' + '!DOCTYPE html>\n' + cloneDoc.outerHTML;
-      const blob = new Blob([htmlString], { type: 'text/html' });
+      let htmlOut = "<" + "!DOCTYPE html>\n" + cloneDoc.outerHTML;
+
+      // Bake the coach's Firebase config directly into the downloaded index.html
+      if (bakedConfig && bakedConfig.apiKey) {
+        const markerRegex = /\/\* GITHUB_FIREBASE_CONFIG_START \*\/[\s\S]*?\/\* GITHUB_FIREBASE_CONFIG_END \*\//;
+        const replacement = `/* GITHUB_FIREBASE_CONFIG_START */\n    let GITHUB_FIREBASE_CONFIG = ${JSON.stringify(bakedConfig, null, 6)};\n    /* GITHUB_FIREBASE_CONFIG_END */`;
+        htmlOut = htmlOut.replace(markerRegex, replacement);
+      }
+
+      const blob = new Blob([htmlOut], { type: "text/html" });
       const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
+      const a = document.createElement("a");
       a.href = url;
-      a.download = 'Index.html';
+      a.download = "index.html";
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      showToast('Downloaded Index.html! Paste its contents into Index.html on script.google.com', 'success');
-    }
 
-    function openModal(id) {
-      document.getElementById(id).classList.add('open');
-    }
-
-    function closeModal(id) {
-      document.getElementById(id).classList.remove('open');
-    }
-
-    let toastTimer = null;
-    function showToast(msg, type = 'success') {
-      const t = document.getElementById('toast');
-      t.textContent = msg;
-      t.className = `toast show ${type}`;
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => { t.className = 'toast'; }, 3800);
+      showToast(
+        bakedConfig
+          ? "Downloaded index.html with your Firebase config baked in! Upload it to GitHub."
+          : "Downloaded index.html! Add your Firebase config before uploading to GitHub.",
+        "success"
+      );
     }
 
     // =========================================================================
-    // 7. INITIALIZATION
+    // 9. WIRE UP ALL EVENT LISTENERS (100% Module-Safe, Zero Inline Scope Bugs)
     // =========================================================================
-    function initApp() {
-      try {
-        const gasPreviewEl = document.getElementById('gasCodePreview');
-        if (gasPreviewEl) {
-          gasPreviewEl.textContent = GAS_CODE_SOURCE;
-        }
+    function bindAllEvents() {
+      // Top Toolbar Buttons
+      document.getElementById("toggleEditBtn").addEventListener("click", () => {
+        isEditMode = !isEditMode;
+        const btn = document.getElementById("toggleEditBtn");
+        const bar = document.getElementById("editHelperBar");
+        document.body.classList.toggle("editing-active", isEditMode);
+        bar.classList.toggle("hidden", !isEditMode);
+        btn.textContent = isEditMode ? "✏️ Edit Mode: ON" : "🔒 Edit Mode: OFF";
+        btn.className = isEditMode ? "btn btn-edit-on" : "btn btn-edit-off";
         renderSheet();
+      });
 
-        if (isGasEnv) {
-          const backupBtn = document.getElementById('backupBtn');
-          if (backupBtn) backupBtn.textContent = '💾 Backup to Drive';
-          setStatus('saving', 'Loading from Google Drive...');
-          google.script.run
-            .withSuccessHandler((res) => {
-              if (res && res.found && res.data) {
-                try {
-                  sheetData = JSON.parse(res.data);
-                  renderSheet();
-                  setStatus('connected', 'Drive Loaded (' + res.timestamp + ')');
-                  showToast('Loaded your latest saved sheet from Google Drive!', 'success');
-                } catch (e) {
-                  setStatus('connected', 'Drive Connected (Using default)');
-                }
-              } else {
-                setStatus('connected', 'Drive Connected (New sheet)');
-              }
-            })
-            .withFailureHandler((err) => {
-              setStatus('', 'Drive access error');
-              showToast('Could not load from Drive: ' + err.message, 'error');
-            })
-            .loadLatestSheet();
+      document.getElementById("openAiBtn").addEventListener("click", () => openModal("aiModal"));
+      document.getElementById("openBackupBtn").addEventListener("click", () => {
+        renderBackupsList();
+        openModal("backupModal");
+      });
+      document.getElementById("openSetupBtn").addEventListener("click", () => openModal("setupModal"));
+      document.getElementById("openResetBtn").addEventListener("click", () => openModal("resetModal"));
+      document.getElementById("lockAppBtn").addEventListener("click", lockApp);
+      document.getElementById("printBtn").addEventListener("click", () => {
+        if (document.activeElement) document.activeElement.blur();
+        window.print();
+      });
+
+      // Local JSON Import
+      document.getElementById("jsonImportInput").addEventListener("change", (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            const parsed = JSON.parse(e.target.result);
+            if (!parsed.defensiveMatrix || !parsed.masterPlays) {
+              throw new Error("Invalid call sheet JSON format.");
+            }
+            sheetData = parsed;
+            renderSheet();
+            scheduleAutoSave();
+            showToast("Loaded call sheet from " + file.name, "success");
+          } catch (err) {
+            showToast("Could not read JSON: " + err.message, "error");
+          }
+        };
+        reader.readAsText(file);
+        event.target.value = "";
+      });
+
+      // Edit Helper Bar: Tag & Badge Inserters (mousedown prevents losing text cursor focus)
+      document.getElementById("editHelperBar").addEventListener("mousedown", (e) => {
+        const tagBtn = e.target.closest("[data-insert-tag]");
+        if (tagBtn) {
+          e.preventDefault();
+          insertStyledTag(tagBtn.getAttribute("data-insert-tag"));
+          return;
         }
-      } catch (err) {
-        const sheet = document.getElementById('callSheet');
-        if (sheet) {
-          sheet.innerHTML = '<div style="padding:20px;color:#b91c1c;font-weight:700;">Initialization error: ' + err.message + '</div>';
+        const badgeBtn = e.target.closest("[data-insert-badge]");
+        if (badgeBtn) {
+          e.preventDefault();
+          insertBadge(badgeBtn.getAttribute("data-insert-badge"));
         }
-      }
+      });
+
+      // Fit Scale Slider
+      document.getElementById("fontScaleSlider").addEventListener("input", (e) => {
+        sheetData.fontScale = Number(e.target.value);
+        applyFontScale(sheetData.fontScale);
+        scheduleAutoSave();
+      });
+
+      // Delegated Inline Text Editing & Row Add/Delete inside #callSheet
+      const sheetEl = document.getElementById("callSheet");
+      sheetEl.addEventListener("input", (e) => {
+        const el = e.target;
+        if (el.hasAttribute("data-bind-root")) {
+          sheetData[el.getAttribute("data-bind-root")] = el.innerHTML;
+          scheduleAutoSave();
+        } else if (el.hasAttribute("data-bind-matrix")) {
+          const [idx, field] = el.getAttribute("data-bind-matrix").split(":");
+          sheetData.defensiveMatrix[Number(idx)][field] = el.innerHTML;
+          scheduleAutoSave();
+        } else if (el.hasAttribute("data-bind-play")) {
+          const [idx, field] = el.getAttribute("data-bind-play").split(":");
+          sheetData.masterPlays[Number(idx)][field] = el.innerHTML;
+          scheduleAutoSave();
+        } else if (el.hasAttribute("data-bind-list")) {
+          const [listKey, idx] = el.getAttribute("data-bind-list").split(":");
+          sheetData[listKey][Number(idx)] = el.innerHTML;
+          scheduleAutoSave();
+        }
+      });
+
+      sheetEl.addEventListener("click", (e) => {
+        const delMatrix = e.target.closest("[data-del-matrix]");
+        if (delMatrix) {
+          sheetData.defensiveMatrix.splice(Number(delMatrix.getAttribute("data-del-matrix")), 1);
+          renderSheet();
+          scheduleAutoSave();
+          return;
+        }
+        const addMatrix = e.target.closest("[data-add-matrix]");
+        if (addMatrix) {
+          sheetData.defensiveMatrix.push({
+            lookTitle: "New Defensive Look",
+            lookSub: "Describe alignment or tendency",
+            primaryHtml: '<span class="tag t-in"><span class="n">#1</span> New Play Call</span>',
+            whyHtml: "Short coaching key or secondary counter."
+          });
+          renderSheet();
+          scheduleAutoSave();
+          showToast("Added new defensive reaction card.", "success");
+          return;
+        }
+        const delPlay = e.target.closest("[data-del-play]");
+        if (delPlay) {
+          sheetData.masterPlays.splice(Number(delPlay.getAttribute("data-del-play")), 1);
+          renderSheet();
+          scheduleAutoSave();
+          return;
+        }
+        const addPlay = e.target.closest("[data-add-play]");
+        if (addPlay) {
+          sheetData.masterPlays.push({
+            wbHtml: '<span class="wb">#13</span>',
+            playHtml: '<span class="play-name">New Play Name</span>',
+            typeHtml: '<span class="tag t-ed">Concept</span> Action',
+            idealHtml: "Describe ideal defensive look.",
+            avoidHtml: "Describe look to avoid.",
+            sitHtml: "<strong>1st &amp; 10</strong>"
+          });
+          renderSheet();
+          scheduleAutoSave();
+          showToast("Added new play row.", "success");
+          return;
+        }
+        const delList = e.target.closest("[data-del-list]");
+        if (delList) {
+          const [listKey, idx] = delList.getAttribute("data-del-list").split(":");
+          sheetData[listKey].splice(Number(idx), 1);
+          renderSheet();
+          scheduleAutoSave();
+          return;
+        }
+        const addList = e.target.closest("[data-add-list]");
+        if (addList) {
+          const listKey = addList.getAttribute("data-add-list");
+          sheetData[listKey].push('<strong>New Situation:</strong> <span class="tag t-in">#1 Play</span>');
+          renderSheet();
+          scheduleAutoSave();
+        }
+      });
+
+      // Modal Close Buttons & Backdrop Clicks
+      document.querySelectorAll("[data-close-modal]").forEach((btn) => {
+        btn.addEventListener("click", () => closeModal(btn.getAttribute("data-close-modal")));
+      });
+      document.querySelectorAll(".modal-backdrop").forEach((backdrop) => {
+        backdrop.addEventListener("click", (e) => {
+          if (e.target === backdrop) backdrop.classList.remove("open");
+        });
+      });
+
+      // AI Updater Button
+      document.getElementById("runAiBtn").addEventListener("click", runAiUpdater);
+
+      // Cloud Backups Modal Actions
+      document.getElementById("saveCloudBackupBtn").addEventListener("click", () => {
+        const labelInput = document.getElementById("backupLabelInput");
+        createCloudBackup(labelInput.value);
+        labelInput.value = "";
+      });
+      document.getElementById("downloadJsonBtn").addEventListener("click", downloadJsonBackup);
+      document.getElementById("backupListContainer").addEventListener("click", (e) => {
+        const restoreBtn = e.target.closest("[data-restore-backup]");
+        if (restoreBtn) {
+          const id = restoreBtn.getAttribute("data-restore-backup");
+          const found = cloudBackups.find((b) => b.id === id);
+          if (found && found.sheetJson) {
+            try {
+              sheetData = JSON.parse(found.sheetJson);
+              renderSheet();
+              scheduleAutoSave();
+              closeModal("backupModal");
+              showToast(`Restored "${found.label}" & auto-saved!`, "success");
+            } catch (err) {
+              showToast("Could not parse backup snapshot.", "error");
+            }
+          }
+          return;
+        }
+        const delBtn = e.target.closest("[data-delete-backup]");
+        if (delBtn) {
+          deleteCloudBackup(delBtn.getAttribute("data-delete-backup"));
+        }
+      });
+
+      // GitHub & Firebase Setup Modal Actions
+      document.getElementById("connectFirebaseBtn").addEventListener("click", async () => {
+        try {
+          const cfg = parseUserFirebaseConfigInput();
+          if (!cfg || !cfg.apiKey || !cfg.projectId) {
+            showToast("Please paste a valid Firebase config containing apiKey and projectId.", "warn");
+            return;
+          }
+          GITHUB_FIREBASE_CONFIG = cfg;
+          await initFirebaseConnection(cfg);
+          showToast("Connected to your Firebase project!", "success");
+        } catch (err) {
+          showToast("Could not parse Firebase config: " + err.message, "error");
+        }
+      });
+
+      document.getElementById("downloadGithubHtmlBtn").addEventListener("click", downloadGithubIndexHtml);
+
+      document.getElementById("copyRulesBtn").addEventListener("click", () => {
+        copyTextToClipboard(document.getElementById("firestoreRulesPre").textContent);
+        showToast("Copied Firestore Security Rules!", "success");
+      });
+
+      // Reset Confirmation
+      document.getElementById("confirmResetBtn").addEventListener("click", () => {
+        sheetData = cloneData(DEFAULT_DATA);
+        renderSheet();
+        closeModal("resetModal");
+        scheduleAutoSave();
+        showToast("Restored default 24-play TC JV Call Sheet & auto-saved!", "success");
+      });
     }
 
-    // Run immediately if the DOM is already ready (prevents blank page in Apps Script)
-    if (document.readyState === 'loading') {
-      window.addEventListener('DOMContentLoaded', initApp);
-    } else {
-      initApp();
-    }
+    // Boot App
+    setupLoginGate();
+    bindAllEvents();
   </script>
 </body>
 </html>
