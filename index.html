@@ -1110,15 +1110,23 @@ service cloud.firestore {
     // =========================================================================
     const COACH_PASSWORD = "Shopping90";
 
-    // When hosting on GitHub Pages, replace the null below with your Firebase
-    // Web App config object (or use the "GitHub & Firebase Setup" button in-app
-    // to paste your config and download a pre-configured index.html automatically).
+    // Pre-configured Firebase Web App credentials for project: footballcheatsheet
     /* GITHUB_FIREBASE_CONFIG_START */
-    let GITHUB_FIREBASE_CONFIG = null;
+    let GITHUB_FIREBASE_CONFIG = {
+      apiKey: "AIzaSyA2zofeYqkguWYGcfg4exI7b20G5rRqfms",
+      authDomain: "footballcheatsheet.firebaseapp.com",
+      projectId: "footballcheatsheet",
+      storageBucket: "footballcheatsheet.firebasestorage.app",
+      messagingSenderId: "990501086414",
+      appId: "1:990501086414:web:c787bc68fafe71b83e9c9f",
+      measurementId: "G-NJMB68SF0V"
+    };
     /* GITHUB_FIREBASE_CONFIG_END */
 
-    // Environment globals (automatically injected in Preview; falls back cleanly on GitHub Pages)
-    const APP_ID = typeof __app_id !== "undefined" ? __app_id : "tc-jv-playbook";
+    // Consistent app namespace so Preview and GitHub Pages sync the exact same Firestore document
+    const APP_ID = (GITHUB_FIREBASE_CONFIG && GITHUB_FIREBASE_CONFIG.projectId)
+      ? "tc-jv-playbook"
+      : (typeof __app_id !== "undefined" ? __app_id : "tc-jv-playbook");
 
     // Default 24-Play TC JV Call Sheet Data (Matched to QB Wrist Coach)
     const DEFAULT_DATA = {
@@ -1397,7 +1405,8 @@ service cloud.firestore {
         fbDb = getFirestore(app);
 
         // RULE 3: Authenticate FIRST and await before touching Firestore
-        if (!overrideConfig && typeof __initial_auth_token !== "undefined" && __initial_auth_token) {
+        const usingBakedConfig = !overrideConfig && Boolean(GITHUB_FIREBASE_CONFIG && GITHUB_FIREBASE_CONFIG.apiKey && GITHUB_FIREBASE_CONFIG.projectId);
+        if (!overrideConfig && !usingBakedConfig && typeof __initial_auth_token !== "undefined" && __initial_auth_token) {
           const cred = await signInWithCustomToken(fbAuth, __initial_auth_token);
           currentUser = cred.user;
         } else {
