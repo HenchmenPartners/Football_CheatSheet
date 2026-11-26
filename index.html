@@ -254,6 +254,61 @@
     .status-dot.saving    { background: #facc15; }
     .status-dot.error     { background: #ef4444; }
 
+    /* Firebase Connection Diagnostic Banner (Hidden unless an error occurs) */
+    .fb-diag-banner {
+      width: 10.5in;
+      max-width: 100%;
+      background: #fef2f2;
+      border: 1.5px solid #fca5a5;
+      border-left: 5px solid #dc2626;
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 12px;
+      color: #7f1d1d;
+      box-shadow: 0 2px 8px rgba(185, 28, 28, 0.1);
+    }
+    .fb-diag-banner.show { display: flex; }
+    .fb-diag-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .fb-diag-code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      background: #fee2e2;
+      color: #991b1b;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .fb-diag-actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .fb-diag-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 9px;
+      border-radius: 5px;
+      background: #ffffff;
+      border: 1px solid #fca5a5;
+      color: #991b1b;
+      font-weight: 700;
+      font-size: 11px;
+      text-decoration: none;
+    }
+    .fb-diag-link:hover { background: #fee2e2; }
+
     /* Secondary Edit Helper Bar */
     .edit-bar {
       width: 10.5in;
@@ -818,6 +873,7 @@
       body.app-locked .app-shell,
       .login-gate,
       .toolbar,
+      .fb-diag-banner,
       .edit-bar,
       .row-actions,
       .modal-backdrop,
@@ -895,6 +951,22 @@
         <button id="printBtn" type="button" class="btn btn-print">🖨️ Print 1-Page PDF</button>
       </div>
       <input type="file" id="jsonImportInput" accept=".json" style="display:none;" />
+    </div>
+
+    <!-- Live Firebase Diagnostic Banner (Shows exact error code & 1-click fix links) -->
+    <div id="fbDiagBanner" class="fb-diag-banner">
+      <div class="fb-diag-top">
+        <div>
+          <strong>⚠️ Firebase Connection Issue:</strong>
+          <span id="fbDiagCode" class="fb-diag-code">unknown</span>
+        </div>
+        <div class="fb-diag-actions">
+          <button id="retryFirebaseBtn" type="button" class="btn btn-danger" style="padding:4px 9px; font-size:11px;">🔄 Retry Connection</button>
+          <button id="dismissDiagBtn" type="button" class="btn btn-subtle" style="background:#fee2e2; color:#991b1b; padding:4px 8px; font-size:11px;">Dismiss</button>
+        </div>
+      </div>
+      <div id="fbDiagHint" style="line-height:1.45;"></div>
+      <div id="fbDiagLinks" class="fb-diag-actions"></div>
     </div>
 
     <!-- Secondary Edit Helper Bar -->
@@ -1097,6 +1169,7 @@ service cloud.firestore {
     import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
     import {
       getFirestore,
+      initializeFirestore,
       doc,
       setDoc,
       addDoc,
@@ -1254,6 +1327,7 @@ service cloud.firestore {
     let fbDb = null;
     let fbAuth = null;
     let currentUser = null;
+    let activeProjectId = "footballcheatsheet";
     let unsubLive = null;
     let unsubBackups = null;
     let cloudBackups = [];
@@ -1277,6 +1351,56 @@ service cloud.firestore {
       const lbl = document.getElementById("statusText");
       dot.className = "status-dot " + state;
       lbl.textContent = text;
+    }
+
+    function getFirebaseFixHint(err) {
+      const code = String(err?.code || "").toLowerCase();
+      const msg = String(err?.message || "");
+      const combined = (code + " " + msg).toLowerCase();
+
+      if (
+        combined.includes("configuration-not-found") ||
+        combined.includes("operation-not-allowed") ||
+        combined.includes("admin-restricted-operation")
+      ) {
+        return "<strong>Fix (30 seconds):</strong> Anonymous Sign-In is not enabled yet in Firebase. Click <strong>1. Enable Anonymous Auth</strong> below &rarr; click <em>Get started</em> (if shown) &rarr; click <strong>Anonymous</strong> &rarr; toggle <strong>Enable</strong> ON &rarr; click <strong>Save</strong>, then press <strong>Retry Connection</strong>.";
+      }
+      if (combined.includes("permission-denied") || combined.includes("missing or insufficient permissions")) {
+        return "<strong>Fix (30 seconds):</strong> Your Firestore Security Rules are blocking reads/writes. Click <strong>2. Open Firestore Rules</strong> below &rarr; paste the rules from <em>GitHub &amp; Firebase Setup</em> &rarr; click <strong>Publish</strong>, then press <strong>Retry Connection</strong>.";
+      }
+      if (combined.includes("not-found") || combined.includes("database") && combined.includes("does not exist")) {
+        return "<strong>Fix:</strong> Your Firestore Database has not been created yet. Click <strong>3. Create Firestore DB</strong> below &rarr; click <strong>Create database</strong> &rarr; choose a US location &rarr; <strong>Enable</strong>, then press <strong>Retry Connection</strong>.";
+      }
+      if (combined.includes("unauthorized-domain")) {
+        return `<strong>Fix:</strong> Add <code>${escapeHtml(window.location.hostname || "your-domain")}</code> under Firebase &rarr; Authentication &rarr; Settings &rarr; <strong>Authorized domains</strong>.`;
+      }
+      if (combined.includes("network-request-failed") || combined.includes("offline")) {
+        return "<strong>Fix:</strong> Network/firewall blocked Firebase (common on school Wi-Fi). Check your internet connection or try off school Wi-Fi, then click <strong>Retry Connection</strong>.";
+      }
+      return `<strong>Details:</strong> ${escapeHtml(msg || "Could not connect to Firebase.")} Use the quick links below to verify Anonymous Auth, Firestore Database, and Firestore Rules are enabled.`;
+    }
+
+    function showFirebaseDiagnostic(err, projectId = activeProjectId) {
+      const banner = document.getElementById("fbDiagBanner");
+      const codeEl = document.getElementById("fbDiagCode");
+      const hintEl = document.getElementById("fbDiagHint");
+      const linksEl = document.getElementById("fbDiagLinks");
+      if (!banner) return;
+
+      const pid = encodeURIComponent(projectId || "footballcheatsheet");
+      codeEl.textContent = err?.code || "firebase-error";
+      hintEl.innerHTML = getFirebaseFixHint(err);
+      linksEl.innerHTML = `
+        <a class="fb-diag-link" href="https://console.firebase.google.com/project/${pid}/authentication/providers" target="_blank" rel="noopener">1. Enable Anonymous Auth ↗</a>
+        <a class="fb-diag-link" href="https://console.firebase.google.com/project/${pid}/firestore/rules" target="_blank" rel="noopener">2. Open Firestore Rules ↗</a>
+        <a class="fb-diag-link" href="https://console.firebase.google.com/project/${pid}/firestore" target="_blank" rel="noopener">3. Create Firestore DB ↗</a>
+      `;
+      banner.classList.add("show");
+    }
+
+    function hideFirebaseDiagnostic() {
+      const banner = document.getElementById("fbDiagBanner");
+      if (banner) banner.classList.remove("show");
     }
 
     function openModal(id) {
@@ -1375,9 +1499,7 @@ service cloud.firestore {
       }
       if (typeof __firebase_config !== "undefined" && __firebase_config) {
         try {
-          return typeof __firebase_config === "string"
-            ? JSON.parse(__firebase_config)
-            : __firebase_config;
+          return JSON.parse(__firebase_config);
         } catch (e) {
           return null;
         }
@@ -1388,12 +1510,14 @@ service cloud.firestore {
     async function initFirebaseConnection(overrideConfig = null) {
       const config = overrideConfig || resolveFirebaseConfig();
       if (!config || !config.apiKey || !config.projectId) {
-        setCloudStatus("", "Local Mode (Add Firebase in Setup)");
+        setCloudStatus("", "Local Mode (Connect Firebase to Auto-Save)");
         renderBackupsList();
         return;
       }
 
       try {
+        activeProjectId = config.projectId;
+        hideFirebaseDiagnostic();
         setCloudStatus("saving", "Authenticating Firebase...");
 
         // Initialize Firebase app safely (avoid duplicate app initialization)
@@ -1402,7 +1526,12 @@ service cloud.firestore {
         const app = existing || initializeApp(config, appName);
 
         fbAuth = getAuth(app);
-        fbDb = getFirestore(app);
+        // Auto-detect long polling so school/coaching firewalls don't drop Firestore
+        try {
+          fbDb = initializeFirestore(app, { experimentalAutoDetectLongPolling: true });
+        } catch (fsInitErr) {
+          fbDb = getFirestore(app);
+        }
 
         // RULE 3: Authenticate FIRST and await before touching Firestore
         const usingBakedConfig = !overrideConfig && Boolean(GITHUB_FIREBASE_CONFIG && GITHUB_FIREBASE_CONFIG.apiKey && GITHUB_FIREBASE_CONFIG.projectId);
@@ -1430,6 +1559,7 @@ service cloud.firestore {
         unsubLive = onSnapshot(
           liveDocRef,
           (snap) => {
+            hideFirebaseDiagnostic();
             if (snap.exists()) {
               const payload = snap.data();
               // Avoid overwriting the DOM if this very browser just wrote it
@@ -1452,8 +1582,9 @@ service cloud.firestore {
             }
           },
           (err) => {
-            setCloudStatus("error", "Firestore read error");
-            showToast("Firebase sync error: " + err.message, "error");
+            setCloudStatus("error", "Firestore Error (" + (err.code || "denied") + ")");
+            showFirebaseDiagnostic(err, config.projectId);
+            showToast("Firebase sync error: " + (err.code || err.message), "error");
           }
         );
 
@@ -1477,12 +1608,14 @@ service cloud.firestore {
             renderBackupsList();
           },
           (err) => {
-            showToast("Could not load cloud backups: " + err.message, "error");
+            showFirebaseDiagnostic(err, config.projectId);
+            showToast("Could not load cloud backups: " + (err.code || err.message), "error");
           }
         );
       } catch (err) {
-        setCloudStatus("error", "Firebase Setup Needed");
-        showToast("Firebase connection failed: " + err.message, "error");
+        setCloudStatus("error", "Firebase Error (" + (err.code || "setup") + ")");
+        showFirebaseDiagnostic(err, config.projectId);
+        showToast("Firebase connection failed: " + (err.code || err.message), "error");
       }
     }
 
@@ -1510,9 +1643,11 @@ service cloud.firestore {
           updatedByUid: currentUser.uid
         });
         setCloudStatus("connected", (isInitialSeed ? "Cloud Ready (" : "Auto-saved (") + formatTime(now) + ")");
+        hideFirebaseDiagnostic();
       } catch (err) {
-        setCloudStatus("error", "Auto-save failed");
-        showToast("Firebase auto-save failed: " + err.message, "error");
+        setCloudStatus("error", "Save Failed (" + (err.code || "error") + ")");
+        showFirebaseDiagnostic(err, activeProjectId);
+        showToast("Firebase auto-save failed: " + (err.code || err.message), "error");
       }
     }
 
@@ -1775,126 +1910,216 @@ service cloud.firestore {
     // =========================================================================
     // 7. GEMINI AI PLAYBOOK & ARMBAND UPDATER (gemini-3-flash-preview)
     // =========================================================================
+    const PLAY_TAG_SCHEMA = {
+      type: "OBJECT",
+      properties: {
+        num: {
+          type: "STRING",
+          description: "Exact wristband number(s) prefixed with '#', e.g. '#1/2', '#14', '#20/21'. Use '--*' only if missing from armband."
+        },
+        label: {
+          type: "STRING",
+          description: "Concise, recognizable play name, e.g. '41/42 Dive', '18 Cross', '2/3-Flat'."
+        },
+        family: {
+          type: "STRING",
+          enum: ["in", "ed", "kp", "ps", "dr"],
+          description: "in=Inside Run, ed=Outside Toss/Sweep/Reverse, kp=QB Keep/Boot Run, ps=Pass/Play-Action, dr=Direct Snap/RPO/Screen."
+        },
+        extra: {
+          type: "STRING",
+          description: "Optional brief aiming point, read cue, or frequency in parentheses, e.g. '(Hit Out/Seam)', '(2x)', '(Attack Weak)'."
+        }
+      },
+      required: ["num", "label", "family"]
+    };
+
     const CALLSHEET_SCHEMA = {
       type: "OBJECT",
       properties: {
-        headerTitle: { type: "STRING" },
-        setALabel: { type: "STRING" },
-        setBLabel: { type: "STRING" },
-        quickKeyNote: { type: "STRING" },
-        matrixSub: { type: "STRING" },
-        masterSub: { type: "STRING" },
+        headerTitle: {
+          type: "STRING",
+          description: "Concise banner title including team name and '(With Wristband #s)'."
+        },
+        setALabel: {
+          type: "STRING",
+          description: "Card Set A number range, e.g. 'Set A: #1-12'."
+        },
+        setBLabel: {
+          type: "STRING",
+          description: "Card Set B number range, e.g. 'Set B: #14-24'."
+        },
+        quickKeyNote: {
+          type: "STRING",
+          description: "Short formation/motion shorthand reminder for the playcaller, e.g. 'L/R = Twins • Mot = Rip/Liz • Direct = Snap 4'."
+        },
+        matrixSub: {
+          type: "STRING",
+          description: "Pre-snap & post-snap defensive keys to eye, e.g. 'Key CB Leverage, FS Depth, LB Motion Flow & DE Technique'."
+        },
+        masterSub: {
+          type: "STRING",
+          description: "Call out any blank wristband slots or plays in the playbook not listed on the armband."
+        },
         defensiveMatrix: {
           type: "ARRAY",
-          description: "Exactly 10 concise sideline reaction cards (2 cols x 5 rows).",
+          description: "Exactly 10 high-leverage sideline defensive reaction cards (2 cols x 5 rows) covering tight/soft CBs, safety depth, over-shifted fronts, LB motion response, heavy box, blitzes, and DE technique.",
           items: {
             type: "OBJECT",
             properties: {
-              lookTitle: { type: "STRING" },
-              lookSub: { type: "STRING" },
+              lookTitle: {
+                type: "STRING",
+                description: "Specific defensive alignment or tendency, e.g. 'CB Tight / Press (Strong Side)' or 'FS Creeping Down / Single-High'."
+              },
+              lookSub: {
+                type: "STRING",
+                description: "Concrete visual tell (cushion yards, safety depth, DE shade, or LB reaction)."
+              },
               primaryPlays: {
                 type: "ARRAY",
-                items: {
-                  type: "OBJECT",
-                  properties: {
-                    num: { type: "STRING" },
-                    label: { type: "STRING" },
-                    family: { type: "STRING", enum: ["in", "ed", "kp", "ps", "dr"] },
-                    extra: { type: "STRING" }
-                  },
-                  required: ["num", "label", "family"]
-                }
+                description: "2 to 3 highest-probability play calls with exact wristband #s and optional quick read/aiming cues.",
+                items: PLAY_TAG_SCHEMA
               },
-              whyNote: { type: "STRING" }
+              whyNote: {
+                type: "STRING",
+                description: "Actionable explanation of WHY the primary calls beat this look and which defender to key/punish."
+              },
+              secondaryPlays: {
+                type: "ARRAY",
+                description: "1 to 2 backup/change-up plays with exact wristband #s if primary is taken away.",
+                items: PLAY_TAG_SCHEMA
+              }
             },
-            required: ["lookTitle", "lookSub", "primaryPlays", "whyNote"]
+            required: ["lookTitle", "lookSub", "primaryPlays", "whyNote", "secondaryPlays"]
           }
         },
         masterPlays: {
           type: "ARRAY",
-          description: "11 to 14 grouped rows covering every play in the playbook & wristband so it fits on 1 page.",
+          description: "11 to 14 grouped rows covering EVERY play in the playbook & wristband (pair L/R mirror plays onto one row so it fits on 1 page).",
           items: {
             type: "OBJECT",
             properties: {
               badges: {
                 type: "ARRAY",
+                description: "Exact wristband badge(s) for this row, e.g. [{text:'#1', set:'A'}, {text:'#2', set:'A'}].",
                 items: {
                   type: "OBJECT",
                   properties: {
-                    text: { type: "STRING" },
+                    text: { type: "STRING", description: "Wristband # like '#1', '#14', or '--*' if unnumbered." },
                     set: { type: "STRING", enum: ["A", "B", "open"] }
                   },
                   required: ["text", "set"]
                 }
               },
-              playName: { type: "STRING" },
-              tagLabel: { type: "STRING" },
+              playName: {
+                type: "STRING",
+                description: "Full play name(s) plus special tag if applicable, e.g. 'R Liz 18 Cross (Boot Pass)' or 'L 47 Direct / R 48 Direct (Beast)'."
+              },
+              tagLabel: {
+                type: "STRING",
+                description: "Short concept tag, e.g. 'A-Gap Iso', 'Weak Edge', '3-Lvl Flood', 'PA Twin GO', 'Direct RPO'."
+              },
               family: { type: "STRING", enum: ["in", "ed", "kp", "ps", "dr"] },
-              actionNote: { type: "STRING" },
-              idealLook: { type: "STRING" },
-              avoidWhen: { type: "STRING" },
-              bestSituation: { type: "STRING" }
+              actionNote: {
+                type: "STRING",
+                description: "Specific mechanics: motion/shift, ball carrier, key block/puller, or QB read progression (e.g. 'Mot leads 4 thru A; seal DE' or 'Read: 3 Flag -> TE Cross -> Run')."
+              },
+              idealLook: {
+                type: "STRING",
+                description: "Detailed defensive tells giving highest probability (specific gap width, CB cushion/leverage, FS depth, LB motion reaction, DE technique)."
+              },
+              avoidWhen: {
+                type: "STRING",
+                description: "Specific red-flag looks, blitzes, coverages, or hash traps that blow up this play."
+              },
+              bestSituation: {
+                type: "STRING",
+                description: "Best down & distance, field zone (RZ, GL, Open), or hash (e.g. '1st & 10 / 3rd & 1-2', '2nd & 4-7 / Wide')."
+              }
             },
             required: ["badges", "playName", "tagLabel", "family", "actionNote", "idealLook", "avoidWhen", "bestSituation"]
           }
         },
         hashGuide: {
           type: "ARRAY",
+          description: "Exactly 3 rows: (1) LEFT Hash (Attack Wide RIGHT), (2) RIGHT Hash (Attack Wide LEFT), (3) Either Hash / Boundary Safe.",
           items: {
             type: "OBJECT",
             properties: {
               title: { type: "STRING" },
+              note: {
+                type: "STRING",
+                description: "Brief tactical coaching note on why these calls shine from this hash (e.g. 'Max space for right tosses, boots & floods')."
+              },
               plays: {
                 type: "ARRAY",
-                items: {
-                  type: "OBJECT",
-                  properties: {
-                    num: { type: "STRING" },
-                    label: { type: "STRING" },
-                    family: { type: "STRING", enum: ["in", "ed", "kp", "ps", "dr"] }
-                  },
-                  required: ["num", "label", "family"]
-                }
+                description: "All applicable plays attacking that side, each with its exact wristband #.",
+                items: PLAY_TAG_SCHEMA
               }
             },
-            required: ["title", "plays"]
+            required: ["title", "note", "plays"]
           }
         },
         downDistance: {
           type: "ARRAY",
+          description: "Exactly 4 situational buckets: 1st & 10, Short Yardage / Goal Line (1-3 yds), 2nd/3rd & Medium (4-7 yds), 3rd & Long / Chunk (8+ yds).",
           items: {
             type: "OBJECT",
             properties: {
               title: { type: "STRING" },
+              note: {
+                type: "STRING",
+                description: "Brief play-calling objective for this situation (e.g. 'Test LB motion & stay ahead of chains')."
+              },
               plays: {
                 type: "ARRAY",
+                description: "3 to 5 highest-probability plays for this situation with exact wristband #s.",
+                items: PLAY_TAG_SCHEMA
+              }
+            },
+            required: ["title", "note", "plays"]
+          }
+        },
+        combos: {
+          type: "ARRAY",
+          description: "Exactly 5 Chess Match Combos (Setup -> Defensive Reaction -> Counterpunch). EVERY setup and counterpunch play MUST include its exact wristband #.",
+          items: {
+            type: "OBJECT",
+            properties: {
+              title: {
+                type: "STRING",
+                description: "Numbered family title, e.g. '1. Dive Family:', '2. Liz Series:', '3. Direct Series:'."
+              },
+              setupPlays: {
+                type: "ARRAY",
+                description: "1 to 2 setup plays with exact wristband #s and optional frequency like '(2x)'.",
+                items: PLAY_TAG_SCHEMA
+              },
+              defReaction: {
+                type: "STRING",
+                description: "Exact defensive reaction/tell to watch for after setup plays (e.g. 'FS creeps to 7 yds / LBs trigger hard')."
+              },
+              counterPlays: {
+                type: "ARRAY",
+                description: "1 to 2 counterpunch plays with exact wristband #s. Use optional 'trigger' on the 2nd play for a chained 3-step sequence.",
                 items: {
                   type: "OBJECT",
                   properties: {
-                    num: { type: "STRING" },
-                    label: { type: "STRING" },
-                    family: { type: "STRING", enum: ["in", "ed", "kp", "ps", "dr"] }
+                    num: { type: "STRING", description: "Exact wristband # with '#', e.g. '#24', '#14', '#20/21'." },
+                    label: { type: "STRING", description: "Concise play name." },
+                    family: { type: "STRING", enum: ["in", "ed", "kp", "ps", "dr"] },
+                    extra: { type: "STRING", description: "Optional read cue, e.g. '(Hit open seam)'." },
+                    trigger: { type: "STRING", description: "Optional defensive trigger before a 2nd chained counter, e.g. 'CB bites up'." }
                   },
                   required: ["num", "label", "family"]
                 }
               }
             },
-            required: ["title", "plays"]
-          }
-        },
-        combos: {
-          type: "ARRAY",
-          items: {
-            type: "OBJECT",
-            properties: {
-              title: { type: "STRING" },
-              description: { type: "STRING" }
-            },
-            required: ["title", "description"]
+            required: ["title", "setupPlays", "defReaction", "counterPlays"]
           }
         }
       },
-      required: ["headerTitle", "setALabel", "setBLabel", "quickKeyNote", "defensiveMatrix", "masterPlays", "hashGuide", "downDistance", "combos"]
+      required: ["headerTitle", "setALabel", "setBLabel", "quickKeyNote", "matrixSub", "masterSub", "defensiveMatrix", "masterPlays", "hashGuide", "downDistance", "combos"]
     };
 
     function fileToBase64(file) {
@@ -1910,9 +2135,16 @@ service cloud.firestore {
     }
 
     function convertAiJsonToSheetData(ai) {
+      const formatNum = (num) => {
+        const clean = String(num || "").trim();
+        if (!clean) return "";
+        return (clean.startsWith("#") || clean === "--*") ? clean : "#" + clean;
+      };
+
       const renderTag = (p) => {
         const fam = ["in", "ed", "kp", "ps", "dr"].includes(p.family) ? p.family : "in";
-        const numPart = p.num ? `<span class="n">${escapeHtml(p.num)}</span> ` : "";
+        const formattedNum = formatNum(p.num);
+        const numPart = formattedNum ? `<span class="n">${escapeHtml(formattedNum)}</span> ` : "";
         const extra = p.extra ? ` ${escapeHtml(p.extra)}` : "";
         return `<span class="tag t-${fam}">${numPart}${escapeHtml(p.label)}</span>${extra}`;
       };
@@ -1927,16 +2159,22 @@ service cloud.firestore {
         matrixSub: escapeHtml(ai.matrixSub || sheetData.matrixSub),
         masterTitle: `2. Complete Master Play Reference — Matched to QB Wrist Coach (${escapeHtml(ai.setALabel)} | ${escapeHtml(ai.setBLabel)})`,
         masterSub: escapeHtml(ai.masterSub || ""),
-        defensiveMatrix: (ai.defensiveMatrix || []).map((c) => ({
-          lookTitle: escapeHtml(c.lookTitle),
-          lookSub: escapeHtml(c.lookSub),
-          primaryHtml: (c.primaryPlays || []).map(renderTag).join(" &bull; "),
-          whyHtml: escapeHtml(c.whyNote)
-        })),
+        defensiveMatrix: (ai.defensiveMatrix || []).map((c) => {
+          const secHtml = (c.secondaryPlays && c.secondaryPlays.length)
+            ? ` <strong>Alt:</strong> ${c.secondaryPlays.map(renderTag).join(" / ")}`
+            : "";
+          return {
+            lookTitle: escapeHtml(c.lookTitle),
+            lookSub: escapeHtml(c.lookSub),
+            primaryHtml: (c.primaryPlays || []).map(renderTag).join(" &bull; "),
+            whyHtml: `${escapeHtml(c.whyNote)}${secHtml}`
+          };
+        }),
         masterPlays: (ai.masterPlays || []).map((p) => ({
           wbHtml: (p.badges || []).map((b) => {
             const cls = b.set === "B" ? "wb wb-b" : (b.set === "open" ? "wb wb-open" : "wb");
-            return `<span class="${cls}">${escapeHtml(b.text)}</span>`;
+            const badgeText = b.set === "open" ? (b.text || "--*") : formatNum(b.text);
+            return `<span class="${cls}">${escapeHtml(badgeText)}</span>`;
           }).join(" "),
           playHtml: `<span class="play-name">${escapeHtml(p.playName)}</span>`,
           typeHtml: `<span class="tag t-${p.family || "in"}">${escapeHtml(p.tagLabel)}</span> ${escapeHtml(p.actionNote)}`,
@@ -1946,17 +2184,27 @@ service cloud.firestore {
         })),
         hashTitle: sheetData.hashTitle,
         hashGuide: (ai.hashGuide || []).map((h, i) => {
+          const notePart = h.note ? ` <span style="color:#475569;">(${escapeHtml(h.note)})</span>` : "";
           const br = i < 2 ? "<br>" : " ";
-          return `<strong>${escapeHtml(h.title)}:</strong>${br}` + (h.plays || []).map(renderTag).join(" ");
+          return `<strong>${escapeHtml(h.title)}:</strong>${notePart}${br}` + (h.plays || []).map(renderTag).join(" ");
         }),
         ddTitle: sheetData.ddTitle,
-        downDistance: (ai.downDistance || []).map((d) =>
-          `<strong>${escapeHtml(d.title)}:</strong> ` + (d.plays || []).map(renderTag).join(" &bull; ")
-        ),
+        downDistance: (ai.downDistance || []).map((d) => {
+          const notePart = d.note ? ` <span style="color:#475569;">&mdash; ${escapeHtml(d.note)}:</span> ` : " ";
+          return `<strong>${escapeHtml(d.title)}</strong>${notePart}` + (d.plays || []).map(renderTag).join(" &bull; ");
+        }),
         combosTitle: sheetData.combosTitle,
-        combos: (ai.combos || []).map((c) =>
-          `<strong>${escapeHtml(c.title)}</strong> ${escapeHtml(c.description).replace(/->/g, '<span class="arrow">&rarr;</span>')}`
-        )
+        combos: (ai.combos || []).map((c) => {
+          const setupHtml = (c.setupPlays || []).map(renderTag).join(" / ");
+          const counterHtml = (c.counterPlays || []).map((cp, idx) => {
+            if (idx === 0) return renderTag(cp);
+            if (cp.trigger && cp.trigger.trim()) {
+              return ` <span class="arrow">&rarr;</span> ${escapeHtml(cp.trigger)} <span class="arrow">&rarr;</span> ${renderTag(cp)}`;
+            }
+            return ` or ${renderTag(cp)}`;
+          }).join("");
+          return `<strong>${escapeHtml(c.title)}</strong> ${setupHtml} <span class="arrow">&rarr;</span> ${escapeHtml(c.defReaction)} <span class="arrow">&rarr;</span> ${counterHtml}`;
+        })
       };
     }
 
@@ -2012,21 +2260,35 @@ service cloud.firestore {
           parts.push({ inlineData: { mimeType: b64.mimeType, data: b64.data } });
         }
 
-        const promptText = `You are an expert high school / JV football offensive coordinator.
-Analyze the uploaded Playbook and/or QB Armband files (plus the current call sheet context below if only one file was uploaded) and produce an updated, ultra-concise 1-page sideline play-calling cheat sheet in JSON format.
+        const systemPrompt = `You are a veteran high school / JV football Offensive Coordinator creating a laminated, high-IQ, 1-page sideline play-calling cheat sheet.
 
-CRITICAL RULES:
-- Match exact wristband play numbers from the uploaded QB Armband! Clearly distinguish Set A vs Set B badges. If any play in the playbook is missing from the armband, flag it as "--*" (open) and note it in masterSub.
-- Keep text punchy and compact so the entire call sheet prints on ONE US Letter landscape page.
-- Color family codes: "in" = Inside Run, "ed" = Outside Run (Toss/Sweep/Reverse), "kp" = QB Keep/Boot Run, "ps" = Pass/Play-Action, "dr" = Direct Snap / RPO / Screen.
-- Coach's extra instructions: ${coachNotes || "None"}
-- Current Sheet Summary: ${JSON.stringify(sheetData.masterPlays.map((p) => p.wbHtml + " " + p.playHtml)).slice(0, 1500)}`;
+CORE PLAY-CALLING STANDARDS:
+1. READ EVERY DIAGRAM CAREFULLY: Extract the actual offensive formation, pre-snap shifts/motions, ball carrier, blocking angles/pullers/lead blockers, pass route depths/combinations, protection, and RPO/option read keys directly from the uploaded diagrams.
+2. EXACT WRISTBAND MATCHING: Cross-reference every single play against the uploaded QB Wrist Coach / Armband. Always prefix play numbers with '#' (e.g., '#1/2', '#14', '#20/21'). Distinguish Set A vs Set B accurately. Never fabricate a wristband number—if a playbook play is not on the armband, badge it '--*' (set: 'open') and explicitly call out blank/missing slots in masterSub.
+3. ZERO GENERIC FILLER — GIVE ACTIONABLE COACHING DETAILS:
+   - Never write vague advice like "good vs run defense" or "call when open".
+   - Always cite specific defensive tells the playcaller can spot from the sideline: CB leverage & cushion (tight/press vs 7+ yd soft), safety shell (Cover 1/3 single-high vs Cover 2 two-high, FS creeping to 7-8 yds), LB motion reaction (fast-flowing vs sitting home), DE alignment (pinching/crashing inside vs wide contain), box count/gaps (light A/B vs 8-9 man pinched box), and hash width.
+4. SECTION-BY-SECTION DEPTH:
+   - Defensive Matrix (10 cards): Give 2-3 primary '#' calls with brief read/aiming cues in 'extra', a sharp tactical 'whyNote' explaining the exact matchup advantage, plus 1-2 secondary '#' counter calls so the coach always has a Plan B.
+   - Master Play Reference (11-14 rows): Cover ALL plays (group L/R mirror pairs onto one row like '#1 #2'). Include exact scheme mechanics & QB read progression in 'actionNote', specific high-probability defensive tells in 'idealLook', concrete play-killers/hash traps in 'avoidWhen', and exact down/distance/zone in 'bestSituation'.
+   - Hash Mark Guide (3 rows): Verify from the diagrams which direction each play actually attacks (Left Hash = attack wide RIGHT; Right Hash = attack wide LEFT; Either Hash = interior/vertical). Include a crisp tactical 'note' and exact '#' numbers.
+   - Down & Distance (4 rows): Include a brief play-calling objective in 'note' and 3-5 highest-probability '#' calls with brief aiming/read cues where helpful.
+   - Chess Match Combos (5 sequences): Build true "looks-alike" play-calling sequences (same formation, motion, or backfield fake). EVERY single setup play and EVERY counterpunch play MUST include its exact '#' wristband number in 'num', paired with the exact defender eye-discipline reaction between them.
+5. ONE-PAGE DENSITY: Keep wording punchy using crisp football shorthand (FS, CB, DE, LBs, Mot, PA, RZ, GL, Cov 2/3) so the rich coaching detail still prints cleanly onto a single US Letter landscape page.`;
+
+        const promptText = `Analyze the uploaded Playbook and/or QB Armband files and generate an upgraded, detail-rich 1-page sideline play-calling cheat sheet.
+- Coach's Custom Instructions / Emphasis: ${coachNotes || "Maximize tactical detail in every section and ensure exact wristband #s appear on every play, including all Chess Match Combos."}
+- Current Call Sheet Reference (preserve any plays/numbers not replaced by newly uploaded files): ${JSON.stringify(sheetData.masterPlays.map((p) => ({ wb: p.wbHtml, play: p.playHtml, type: p.typeHtml }))).slice(0, 2600)}`;
 
         parts.push({ text: promptText });
 
         const payload = {
+          systemInstruction: {
+            parts: [{ text: systemPrompt }]
+          },
           contents: [{ role: "user", parts }],
           generationConfig: {
+            temperature: 0.25,
             responseMimeType: "application/json",
             responseSchema: CALLSHEET_SCHEMA
           }
@@ -2035,7 +2297,7 @@ CRITICAL RULES:
         const apiKey = enteredKey || "";
         const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
 
-        setAiStatus("Analyzing plays & wristband numbers with Gemini 3 Flash...", false, true);
+        setAiStatus("Deep-analyzing diagrams, defensive keys & wristband #s with Gemini 3 Flash...", false, true);
         const response = await fetchWithBackoff(apiUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -2060,7 +2322,7 @@ CRITICAL RULES:
 
         closeModal("aiModal");
         document.getElementById("aiStatusBox").className = "ai-status-box";
-        showToast("Call sheet updated and auto-saved!", "success");
+        showToast("Call sheet updated with detailed analysis & auto-saved!", "success");
       } catch (err) {
         setAiStatus(err.message || "Failed to update call sheet.", true, false);
       } finally {
@@ -2166,6 +2428,10 @@ CRITICAL RULES:
       document.getElementById("openSetupBtn").addEventListener("click", () => openModal("setupModal"));
       document.getElementById("openResetBtn").addEventListener("click", () => openModal("resetModal"));
       document.getElementById("lockAppBtn").addEventListener("click", lockApp);
+      document.getElementById("retryFirebaseBtn").addEventListener("click", () => {
+        initFirebaseConnection();
+      });
+      document.getElementById("dismissDiagBtn").addEventListener("click", hideFirebaseDiagnostic);
       document.getElementById("printBtn").addEventListener("click", () => {
         if (document.activeElement) document.activeElement.blur();
         window.print();
