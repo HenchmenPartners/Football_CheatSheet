@@ -1,0 +1,1928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TC JV Full Playbook — 1-Page Sideline Call Sheet</title>
+  <style>
+    :root {
+      --navy: #0f2544;
+      --slate: #1e3a5f;
+      --border: #cbd5e1;
+      --text-dark: #0f172a;
+      --text-muted: #475569;
+
+      /* Play Family Color Coding */
+      --in-bg: #dbeafe;  --in-tx: #1e40af;  /* Inside Run */
+      --ed-bg: #dcfce7;  --ed-tx: #166534;  /* Toss / Reverse */
+      --kp-bg: #ede9fe;  --kp-tx: #5b21b6;  /* QB Keep */
+      --ps-bg: #fef3c7;  --ps-tx: #92400e;  /* Pass */
+      --dr-bg: #ffe4e6;  --dr-tx: #9f1239;  /* Direct Snap / RPO / Screen */
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #e2e8f0;
+      color: var(--text-dark);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 12px;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    /* Screen-only toolbar */
+    .toolbar {
+      width: 10.5in;
+      max-width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      background: var(--navy);
+      color: #fff;
+      padding: 8px 14px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      font-size: 12px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    .toolbar-tip {
+      color: #cbd5e1;
+      font-size: 11.5px;
+    }
+
+    .toolbar-tip strong {
+      color: #fff;
+    }
+
+    .print-btn {
+      background: #22c55e;
+      color: #052e16;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 4px;
+      font-weight: 800;
+      font-size: 12px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s ease;
+    }
+
+    .print-btn:hover {
+      background: #4ade80;
+    }
+
+    /* 1-Page Landscape Sheet Container (fits US Letter 11x8.5 with 0.25in margins) */
+    .sheet {
+      width: 10.5in;
+      min-height: 8in;
+      height: auto;
+      background: #ffffff;
+      border: 1.5px solid #94a3b8;
+      box-shadow: 0 6px 24px rgba(15, 23, 42, 0.18);
+      padding: 7px 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 5px;
+      overflow: visible;
+    }
+
+    /* Header */
+    .header {
+      background: var(--navy);
+      color: #fff;
+      padding: 4px 9px;
+      border-radius: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-title {
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.35px;
+      text-transform: uppercase;
+    }
+
+    .header-meta {
+      display: flex;
+      gap: 6px;
+      font-size: 8.2px;
+      align-items: center;
+    }
+
+    .meta-pill {
+      background: rgba(255, 255, 255, 0.15);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-weight: 600;
+    }
+
+    .legend {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+    }
+
+    /* Color-coded Play Tags */
+    .tag {
+      display: inline-block;
+      padding: 0.5px 4px;
+      border-radius: 3px;
+      font-weight: 700;
+      font-size: 7.7px;
+      line-height: 1.25;
+      white-space: nowrap;
+    }
+
+    .t-in { background: var(--in-bg); color: var(--in-tx); }
+    .t-ed { background: var(--ed-bg); color: var(--ed-tx); }
+    .t-kp { background: var(--kp-bg); color: var(--kp-tx); }
+    .t-ps { background: var(--ps-bg); color: var(--ps-tx); }
+    .t-dr { background: var(--dr-bg); color: var(--dr-tx); }
+
+    /* Wristband Number Badges */
+    .wb {
+      display: inline-block;
+      background: var(--navy);
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 7.4px;
+      padding: 1px 4px;
+      border-radius: 3px;
+      line-height: 1.2;
+      white-space: nowrap;
+      letter-spacing: 0.2px;
+    }
+
+    .wb-b {
+      background: #9a3412; /* Card Set B indicator */
+    }
+
+    .wb-open {
+      background: #e2e8f0;
+      color: #64748b;
+      border: 1px dashed #94a3b8;
+    }
+
+    .n {
+      font-weight: 900;
+      margin-right: 1px;
+    }
+
+    /* Section Headings */
+    .sec-title {
+      font-size: 9px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.45px;
+      color: #fff;
+      background: var(--slate);
+      padding: 2.5px 7px;
+      border-radius: 3px 3px 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .sec-sub {
+      font-weight: 500;
+      font-size: 7.8px;
+      color: #cbd5e1;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+
+    /* Section 1: Defensive Reaction Matrix (2x5 grid) */
+    .def-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border: 1px solid var(--border);
+      border-top: none;
+      border-radius: 0 0 3px 3px;
+      overflow: hidden;
+    }
+
+    .def-card {
+      display: grid;
+      grid-template-columns: 1.08fr 1.72fr;
+      border-bottom: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      font-size: 7.9px;
+      line-height: 1.2;
+    }
+
+    .def-card:nth-child(2n) { border-right: none; }
+    .def-card:nth-last-child(-n+2) { border-bottom: none; }
+
+    .def-look {
+      background: #f1f5f9;
+      padding: 2.5px 5px;
+      border-right: 1px solid #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .def-look strong {
+      color: var(--navy);
+      font-size: 8.1px;
+      display: block;
+    }
+
+    .def-look span {
+      color: var(--text-muted);
+      font-size: 7.3px;
+    }
+
+    .def-call {
+      padding: 2.5px 5px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 1.5px;
+      background: #fff;
+    }
+
+    .primary-call {
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+
+    .why-note {
+      font-size: 7.3px;
+      color: var(--text-muted);
+    }
+
+    /* Section 2: Master 24-Play Table */
+    table.play-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 7.75px;
+      line-height: 1.16;
+      border: 1px solid var(--border);
+      border-top: none;
+    }
+
+    table.play-table th {
+      background: #e2e8f0;
+      color: var(--navy);
+      text-align: left;
+      padding: 2.5px 5px;
+      font-size: 7.6px;
+      font-weight: 800;
+      text-transform: uppercase;
+      border-bottom: 1.5px solid #94a3b8;
+    }
+
+    table.play-table td {
+      padding: 2px 5px;
+      border-bottom: 1px solid #e2e8f0;
+      vertical-align: middle;
+    }
+
+    table.play-table tr:nth-child(even) td {
+      background: #f8fafc;
+    }
+
+    table.play-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .play-name {
+      font-weight: 800;
+      color: var(--navy);
+      font-size: 7.85px;
+    }
+
+    .avoid-txt {
+      color: #b91c1c;
+      font-weight: 600;
+    }
+
+    /* Section 3: Bottom 3-Column Strip */
+    .bottom-grid {
+      display: grid;
+      grid-template-columns: 1.02fr 1.03fr 1.15fr;
+      gap: 6px;
+    }
+
+    .mini-box {
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .mini-body {
+      padding: 3px 6px;
+      font-size: 7.6px;
+      line-height: 1.22;
+      background: #fff;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 2px;
+    }
+
+    .row-item {
+      border-bottom: 1px dashed #e2e8f0;
+      padding-bottom: 2px;
+    }
+
+    .row-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .row-item strong {
+      color: var(--navy);
+    }
+
+    .arrow {
+      color: #dc2626;
+      font-weight: 900;
+      margin: 0 1.5px;
+    }
+
+    /* Print Rules */
+    @page {
+      size: letter landscape;
+      margin: 0.25in;
+    }
+
+    @media print {
+      body {
+        background: #fff;
+        padding: 0;
+      }
+      .toolbar,
+      .edit-bar,
+      .row-actions,
+      .modal-backdrop,
+      .toast {
+        display: none !important;
+      }
+      .sheet {
+        width: 100%;
+        height: 7.95in;
+        border: none;
+        box-shadow: none;
+        padding: 0;
+        transform: none !important;
+      }
+      [contenteditable] {
+        outline: none !important;
+        background: transparent !important;
+      }
+    }
+
+    /* Interactive Toolbar & Controls */
+    .toolbar {
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 8px 12px;
+    }
+
+    .toolbar-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .toolbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-weight: 700;
+      font-size: 11.5px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+      transition: filter 0.15s ease, transform 0.1s ease;
+    }
+
+    .btn:hover { filter: brightness(1.08); }
+    .btn:active { transform: scale(0.98); }
+
+    .btn-edit-on { background: #38bdf8; color: #082f49; }
+    .btn-edit-off { background: #475569; color: #f8fafc; }
+    .btn-ai { background: #a855f7; color: #ffffff; }
+    .btn-drive { background: #f59e0b; color: #451a03; }
+    .btn-backup { background: #0ea5e9; color: #ffffff; }
+    .btn-subtle { background: rgba(255,255,255,0.14); color: #f1f5f9; }
+    .btn-danger { background: #ef4444; color: #ffffff; }
+
+    .status-pill {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.12);
+      color: #e2e8f0;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #94a3b8;
+    }
+    .status-dot.connected { background: #22c55e; }
+    .status-dot.saving { background: #facc15; }
+
+    /* Secondary Edit Helper Bar */
+    .edit-bar {
+      width: 10.5in;
+      max-width: 100%;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 6px 10px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 11px;
+      box-shadow: 0 1px 4px rgba(15,23,42,0.06);
+    }
+
+    .edit-bar.hidden { display: none; }
+
+    .tag-inserter {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .tag-btn {
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 10.5px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .scale-control {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #334155;
+      font-weight: 600;
+    }
+
+    /* Inline Editing Highlights (Screen Only) */
+    .editing-active [contenteditable="true"] {
+      border-radius: 2px;
+      transition: box-shadow 0.12s ease, background-color 0.12s ease;
+    }
+    .editing-active [contenteditable="true"]:hover {
+      box-shadow: inset 0 0 0 1px #93c5fd;
+      cursor: text;
+    }
+    .editing-active [contenteditable="true"]:focus {
+      outline: 2px solid #2563eb;
+      outline-offset: 1px;
+      background-color: rgba(239, 246, 255, 0.9);
+      color: #0f172a;
+    }
+    .editing-active .header [contenteditable="true"]:focus,
+    .editing-active .sec-title [contenteditable="true"]:focus {
+      background-color: rgba(30, 58, 95, 0.95);
+      color: #ffffff;
+      outline-color: #38bdf8;
+    }
+
+    /* Subtle Row Add/Delete Controls in Edit Mode */
+    .row-actions {
+      display: none;
+      gap: 3px;
+      align-items: center;
+    }
+    .editing-active .row-actions {
+      display: inline-flex;
+    }
+    .mini-act-btn {
+      background: #e2e8f0;
+      color: #334155;
+      border: none;
+      border-radius: 3px;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 1px 4px;
+      cursor: pointer;
+      line-height: 1.2;
+    }
+    .mini-act-btn:hover { background: #cbd5e1; }
+    .mini-act-btn.del { background: #fee2e2; color: #b91c1c; }
+    .mini-act-btn.del:hover { background: #fecaca; }
+    .mini-act-btn.add { background: #dcfce7; color: #166534; }
+    .mini-act-btn.add:hover { background: #bbf7d0; }
+
+    .def-card { position: relative; }
+    .def-card .card-del {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      z-index: 2;
+    }
+
+    /* Modals */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(2px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 1000;
+    }
+    .modal-backdrop.open { display: flex; }
+
+    .modal {
+      background: #ffffff;
+      width: 100%;
+      max-width: 660px;
+      max-height: 90vh;
+      border-radius: 10px;
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.25);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .modal-header {
+      background: var(--navy);
+      color: #ffffff;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-header h2 {
+      font-size: 15px;
+      font-weight: 800;
+    }
+    .modal-close {
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      width: 28px;
+      height: 28px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .modal-body {
+      padding: 16px;
+      overflow-y: auto;
+      font-size: 13px;
+      line-height: 1.45;
+      color: #1e293b;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .modal-footer {
+      padding: 10px 16px;
+      background: #f8fafc;
+      border-top: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .form-group label {
+      font-weight: 700;
+      font-size: 12px;
+      color: var(--navy);
+    }
+    .form-hint {
+      font-size: 11px;
+      color: #64748b;
+    }
+    .file-drop {
+      border: 2px dashed #cbd5e1;
+      border-radius: 8px;
+      padding: 10px 12px;
+      background: #f8fafc;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .form-input, .form-textarea {
+      width: 100%;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-family: inherit;
+      font-size: 12.5px;
+    }
+    .form-textarea { min-height: 64px; resize: vertical; }
+
+    .code-block {
+      background: #0f172a;
+      color: #e2e8f0;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 11px;
+      line-height: 1.4;
+      padding: 10px 12px;
+      border-radius: 6px;
+      max-height: 240px;
+      overflow: auto;
+      white-space: pre;
+    }
+
+    .step-list {
+      padding-left: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      font-size: 12.5px;
+    }
+
+    .ai-status-box {
+      display: none;
+      background: #f5f3ff;
+      border: 1px solid #c4b5fd;
+      color: #4c1d95;
+      padding: 10px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      align-items: center;
+      gap: 8px;
+    }
+    .ai-status-box.show { display: flex; }
+    .ai-status-box.error {
+      background: #fef2f2;
+      border-color: #fca5a5;
+      color: #991b1b;
+    }
+
+    .spinner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid #c4b5fd;
+      border-top-color: #7c3aed;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 18px;
+      right: 18px;
+      background: #0f172a;
+      color: #ffffff;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-weight: 600;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.22);
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      z-index: 2000;
+      max-width: 380px;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.success { border-left: 4px solid #22c55e; }
+    .toast.warn { border-left: 4px solid #f59e0b; }
+    .toast.error { border-left: 4px solid #ef4444; }
+  </style>
+</head>
+<body class="editing-active">
+
+  <!-- Screen-only Interactive Toolbar -->
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <button id="toggleEditBtn" class="btn btn-edit-on" onclick="toggleEditMode()">✏️ Edit Mode: ON</button>
+      <span id="driveStatusPill" class="status-pill">
+        <span id="statusDot" class="status-dot"></span>
+        <span id="statusText">Preview Mode (Edits live in session)</span>
+      </span>
+    </div>
+    <div class="toolbar-actions">
+      <button class="btn btn-ai" onclick="openModal('aiModal')">✨ Update Playbook / Armband (AI)</button>
+      <button id="backupBtn" class="btn btn-backup" onclick="handleBackupClick()">💾 Backup</button>
+      <button class="btn btn-drive" onclick="openModal('gasModal')">☁️ Google Drive / Apps Script</button>
+      <label for="jsonImportInput" class="btn btn-subtle">📂 Load JSON</label>
+      <button class="btn btn-subtle" onclick="openModal('resetModal')">↺ Reset</button>
+      <button class="print-btn" onclick="prepareAndPrint()">🖨️ Print 1-Page PDF</button>
+    </div>
+    <input type="file" id="jsonImportInput" accept=".json" style="display:none" onchange="handleJsonImport(event)" />
+  </div>
+
+  <!-- Secondary Edit Helper Bar (Hidden when Edit Mode is OFF or Printing) -->
+  <div id="editHelperBar" class="edit-bar">
+    <div class="tag-inserter">
+      <strong style="color:var(--navy); margin-right:2px;">Click any text below to edit &bull; Insert Color Tag at cursor:</strong>
+      <button class="tag-btn t-in" onmousedown="event.preventDefault(); insertStyledTag('in')">+ Inside</button>
+      <button class="tag-btn t-ed" onmousedown="event.preventDefault(); insertStyledTag('ed')">+ Toss/Rev</button>
+      <button class="tag-btn t-kp" onmousedown="event.preventDefault(); insertStyledTag('kp')">+ QB Keep</button>
+      <button class="tag-btn t-ps" onmousedown="event.preventDefault(); insertStyledTag('ps')">+ Pass</button>
+      <button class="tag-btn t-dr" onmousedown="event.preventDefault(); insertStyledTag('dr')">+ Direct/RPO</button>
+      <button class="tag-btn wb" onmousedown="event.preventDefault(); insertBadge('A')">+ Set A #</button>
+      <button class="tag-btn wb wb-b" onmousedown="event.preventDefault(); insertBadge('B')">+ Set B #</button>
+    </div>
+    <div class="scale-control">
+      <label for="fontScaleSlider">Fit Scale:</label>
+      <input id="fontScaleSlider" type="range" min="85" max="110" value="100" oninput="updateFontScale(this.value)" />
+      <span id="fontScaleVal">100%</span>
+    </div>
+  </div>
+
+  <!-- 1-PAGE LAMINATED CALL SHEET (Dynamically Rendered & Inline Editable) -->
+  <div id="callSheet" class="sheet"></div>
+
+  <!-- MODAL 1: AI PLAYBOOK & ARMBAND UPDATER -->
+  <div id="aiModal" class="modal-backdrop" onclick="if(event.target===this) closeModal('aiModal')">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>✨ Update Call Sheet from New Playbook &amp; QB Armband</h2>
+        <button class="modal-close" onclick="closeModal('aiModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:12px; color:#475569;">
+          Upload your latest <strong>Playbook PDF/Images</strong> and/or <strong>QB Wrist Coach Armband</strong>. Gemini AI will analyze every play, match all wristband numbers, and regenerate your entire 1-page sideline call sheet automatically.
+        </p>
+
+        <div class="form-group">
+          <label for="playbookFile">1. Latest Playbook (PDF or Images)</label>
+          <div class="file-drop">
+            <input type="file" id="playbookFile" accept=".pdf,image/*" multiple />
+          </div>
+          <span class="form-hint">Supports Playmaker PDFs or photos/screenshots of play diagrams.</span>
+        </div>
+
+        <div class="form-group">
+          <label for="armbandFile">2. Latest QB Armband / Wrist Coach (PDF or Image — Optional)</label>
+          <div class="file-drop">
+            <input type="file" id="armbandFile" accept=".pdf,image/*" multiple />
+          </div>
+          <span class="form-hint">Matches exact Set A / Set B wristband numbers to every play on the sheet.</span>
+        </div>
+
+        <div class="form-group">
+          <label for="coachNotes">3. Coach's Custom Instructions (Optional)</label>
+          <textarea id="coachNotes" class="form-textarea" placeholder="Example: Put R Liz TE Reverse into Slot #13, emphasize Cover 2 beaters, or highlight our fastest tailback plays..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="geminiApiKeyInput">4. Gemini API Key (Optional in Canvas &bull; Required on script.google.com)</label>
+          <input type="password" id="geminiApiKeyInput" class="form-input" placeholder="Leave blank in Canvas preview, or paste your Google AI Studio key here..." />
+          <span class="form-hint">Get a free key at <strong>aistudio.google.com</strong>. On Apps Script, you can also save it once as <code>GEMINI_API_KEY</code> in Project Settings &rarr; Script Properties so you never have to retype it.</span>
+        </div>
+
+        <div id="aiStatusBox" class="ai-status-box">
+          <div class="spinner" id="aiSpinner"></div>
+          <span id="aiStatusText">Analyzing playbook...</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-subtle" style="color:#334155; background:#e2e8f0;" onclick="closeModal('aiModal')">Cancel</button>
+        <button id="runAiBtn" class="btn btn-ai" onclick="runAiUpdater()">✨ Analyze &amp; Update Call Sheet</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: GOOGLE APPS SCRIPT & AUTO-BACKUP SETUP -->
+  <div id="gasModal" class="modal-backdrop" onclick="if(event.target===this) closeModal('gasModal')">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>☁️ Host on script.google.com + Auto-Save &amp; Backup to Google Drive</h2>
+        <button class="modal-close" onclick="closeModal('gasModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:12.5px;">
+          This app is pre-wired to automatically save every edit and create timestamped backups inside your exact Google Drive folder:<br>
+          <strong style="color:var(--navy); word-break:break-all;">Folder ID: 1gi9pKoIjY6a4Z2knMu8xq9Z3RHL0RZL-</strong>
+        </p>
+
+        <ol class="step-list">
+          <li>Go to <strong>script.google.com</strong> and click <strong>New Project</strong> (name it <em>TC JV Call Sheet</em>).</li>
+          <li>Delete everything in <code>Code.gs</code>, then click <strong>Copy Code.gs</strong> below and paste it in.</li>
+          <li>Click the <strong>+</strong> icon next to Files &rarr; choose <strong>HTML</strong> &rarr; name it exactly <code>Index</code> (it creates <code>Index.html</code>).</li>
+          <li>Click <strong>Download Index.html</strong> below (or copy this file), paste all of its code into <code>Index.html</code>, and click <strong>Save (Ctrl+S)</strong>.</li>
+          <li><em>(Optional for AI Updater)</em> In Apps Script, click the ⚙️ <strong>Project Settings</strong> &rarr; <strong>Script Properties</strong> &rarr; Add property <code>GEMINI_API_KEY</code> with your Google AI Studio key.</li>
+          <li>Click <strong>Deploy &rarr; New Deployment &rarr; Web app</strong> &rarr; Execute as: <strong>Me</strong> &rarr; Who has access: <strong>Only myself</strong> (or Anyone with link) &rarr; <strong>Deploy</strong> &amp; authorize Google Drive!</li>
+        </ol>
+
+        <div class="form-group">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <label>Ready-to-Paste <code>Code.gs</code> (Pre-configured for your Drive folder)</label>
+            <button class="btn btn-drive" onclick="copyGasCode()">📋 Copy Code.gs</button>
+          </div>
+          <pre id="gasCodePreview" class="code-block"></pre>
+        </div>
+
+        <div style="background:#f0fdf4; border:1px solid #86efac; padding:8px 10px; border-radius:6px; font-size:11.5px; color:#166534;">
+          <strong>What gets saved in your Drive folder automatically:</strong><br>
+          &bull; <code>TC_JV_CallSheet_LIVE.json</code> — auto-updates 2 seconds after any edit so your latest sheet loads automatically next time.<br>
+          &bull; <code>Backups/</code> subfolder — every click of <strong>Backup</strong> (and every AI playbook update) saves a timestamped <code>.json</code> + printable <code>.html</code> snapshot!
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-backup" onclick="downloadStandaloneIndexHtml()">⬇️ Download Index.html</button>
+        <button class="btn btn-subtle" style="color:#334155; background:#e2e8f0;" onclick="closeModal('gasModal')">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 3: RESET CONFIRMATION -->
+  <div id="resetModal" class="modal-backdrop" onclick="if(event.target===this) closeModal('resetModal')">
+    <div class="modal" style="max-width:420px;">
+      <div class="modal-header">
+        <h2>↺ Reset to Default TC JV Playbook?</h2>
+        <button class="modal-close" onclick="closeModal('resetModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>This will restore all wording and plays back to the original 24-play TC JV Playbook &amp; Armband layout. (If connected to Drive, you can click Backup first to keep a copy of your current edits.)</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-subtle" style="color:#334155; background:#e2e8f0;" onclick="closeModal('resetModal')">Cancel</button>
+        <button class="btn btn-danger" onclick="confirmReset()">Yes, Reset Sheet</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="toast"></div>
+
+  <script>
+    // =========================================================================
+    // 1. DEFAULT DATA (Exact TC JV 24-Play Call Sheet + Wristband Numbers)
+    // =========================================================================
+    const DRIVE_FOLDER_ID = '1gi9pKoIjY6a4Z2knMu8xq9Z3RHL0RZL-';
+
+    const DEFAULT_DATA = {
+      fontScale: 100,
+      headerTitle: 'TC JV Playbook — Sideline Call Sheet (With Wristband #s)',
+      setALabel: 'Set A: #1&ndash;12',
+      setBLabel: 'Set B: #14&ndash;24',
+      quickKeyNote: 'L/R = Twins &bull; Direct = Snap 4',
+      matrixTitle: '1. Quick-React Sideline Matrix: "If You See This Look &rarr; Yell This Wristband #"',
+      matrixSub: 'Read CB Leverage, Free Safety Depth, LB Motion Response &amp; DE Technique',
+      masterTitle: '2. Complete Master Play Reference — Matched to QB Wrist Coach (Set A: #1&ndash;12 | Set B: #14&ndash;24)',
+      masterSub: '*Note: Wristband Slot #13 is currently blank (R Liz TE Reverse is not on armband)',
+      defensiveMatrix: [
+        {
+          lookTitle: 'CB Tight / Press (Strong Side)',
+          lookSub: 'Walked up on Twins or crashing hard on edge',
+          primaryHtml: '<span class="tag t-ps"><span class="n">#15/16</span> 2/3-Flat</span> (Hit Out/TE) &bull; <span class="tag t-ed"><span class="n">#5/7</span> 38/27 Toss</span>',
+          whyHtml: 'Throw over tight CB, or attack away w/ <span class="tag t-in"><span class="n">#3/4</span> 44/43 Ctr</span> or <span class="tag t-in"><span class="n">#1/2</span> Dive</span>.'
+        },
+        {
+          lookTitle: 'CB Tight / Crashing (Weak Side)',
+          lookSub: 'Weak CB cheats up to blow up 38/27 Toss',
+          primaryHtml: '<span class="tag t-ps"><span class="n">#14</span> 18 Cross</span> &bull; <span class="tag t-ed"><span class="n">#8</span> L TE Rev</span> &bull; <span class="tag t-kp"><span class="n">#12</span> 18 Keep</span>',
+          whyHtml: 'Burn his aggression deep/backside! Also pound strong w/ <span class="tag t-dr"><span class="n">#18/19</span> Direct</span>.'
+        },
+        {
+          lookTitle: 'CBs Soft / Deep Cushion (7+ yds)',
+          lookSub: 'Secondary bailing or respecting vertical pass',
+          primaryHtml: '<span class="tag t-dr"><span class="n">#22/23</span> 3 Screen</span> &bull; <span class="tag t-ed"><span class="n">#9/10</span> &amp; <span class="n">#5/7</span> Toss</span>',
+          whyHtml: 'Take free yards! <span class="tag t-ps"><span class="n">#15/16</span> 2/3-Flat</span> (hit Flat) &amp; <span class="tag t-kp"><span class="n">#11</span> 17 Keep</span> chew cushion.'
+        },
+        {
+          lookTitle: 'FS Creeping Down / Single-High',
+          lookSub: 'FS playing 7-8 yds / biting on Dive or Liz',
+          primaryHtml: '<span class="tag t-ps"><span class="n">#24</span> 41 Fake TE GO (Omaha)</span> &bull; <span class="tag t-ps"><span class="n">#17</span> Liz TE GO</span>',
+          whyHtml: 'Twin TE seams put FS in 2-on-1 bind! Or <span class="tag t-ps"><span class="n">#14</span> 18 Cross</span> (3 deep flag).'
+        },
+        {
+          lookTitle: 'Defense Over-Shifts to Twins',
+          lookSub: 'LBs &amp; Safety align heavy to L or R Twin side',
+          primaryHtml: '<span class="tag t-ed"><span class="n">#6</span> Wing Rip 38</span> &bull; <span class="tag t-ed"><span class="n">#5/7</span> 38/27 Toss</span> &bull; <span class="tag t-in"><span class="n">#3/4</span> Ctr</span>',
+          whyHtml: 'Pre-snap Dbl Wing steals weak edge; <span class="tag t-dr"><span class="n">#20/21</span> 1-Opt Drag</span> punishes weak!'
+        },
+        {
+          lookTitle: 'LBs Flying w/ Rip or Liz Motion',
+          lookSub: 'M/W/S sprint across box at motion snap',
+          primaryHtml: '<span class="tag t-ps"><span class="n">#14</span> 18 Cross</span> &bull; <span class="tag t-kp"><span class="n">#12</span> 18 Keep</span> &bull; <span class="tag t-ed"><span class="n">#9/10</span> 47/48 Toss</span>',
+          whyHtml: 'Hit vacated strong side! <span class="tag t-ed"><span class="n">#8</span> L TE Rev</span> &amp; <span class="tag t-in"><span class="n">#1/2</span> Dive</span> punish early flow.'
+        },
+        {
+          lookTitle: 'LBs Sitting / Ignoring Motion',
+          lookSub: 'Box stays home; no bump to motion side',
+          primaryHtml: '<span class="tag t-ed"><span class="n">#6</span> Wing Rip 38</span> &bull; <span class="tag t-ed"><span class="n">#5/7</span> 38/27 Toss</span> &bull; <span class="tag t-kp"><span class="n">#11</span> 17 Keep</span>',
+          whyHtml: 'Outnumber the weak edge immediately until LBs are forced to adjust.'
+        },
+        {
+          lookTitle: 'Heavy / Pinched Box (8-9 Men)',
+          lookSub: '5-3 squeezing A/B gaps; DEs crashing inside',
+          primaryHtml: '<span class="tag t-ps"><span class="n">#15/16</span> 2/3-Flat</span> &bull; <span class="tag t-ps"><span class="n">#24</span> Omaha</span> &bull; <span class="tag t-dr"><span class="n">#18/19</span> Direct</span>',
+          whyHtml: 'Make them pay through the air, or seal pinched DE &amp; hit <span class="tag t-ed"><span class="n">#9/10</span> 47/48 Toss</span>.'
+        },
+        {
+          lookTitle: 'Blitz / Over-Pursuit on Direct',
+          lookSub: 'Defense loads strong side vs Direct Snap',
+          primaryHtml: '<span class="tag t-dr"><span class="n">#20/21</span> 4 Dir 1-Opt Drag</span> &bull; <span class="tag t-dr"><span class="n">#22/23</span> 3 Screen</span>',
+          whyHtml: 'Chasing 4 strong? Flip to QB weak (Run/Drag)! Edge blitzing? Hit quick 3 Screen!'
+        },
+        {
+          lookTitle: 'DE Crashing Inside vs. Wide DE',
+          lookSub: 'Key the play-side &amp; backside Defensive Ends',
+          primaryHtml: 'Crash DE: <span class="tag t-ed"><span class="n">#5/7</span> Toss</span>, <span class="tag t-kp"><span class="n">#11/12</span> Keep</span> &bull; Wide DE: <span class="tag t-in"><span class="n">#3/4</span> Ctr</span>',
+          whyHtml: 'Backside DE chasing motion? <span class="tag t-kp"><span class="n">#12</span> 18 Keep</span>, <span class="tag t-ps"><span class="n">#14</span> 18 Cross</span>, or <span class="tag t-ed"><span class="n">#8</span> TE Rev</span>!'
+        }
+      ],
+      masterPlays: [
+        { wbHtml: '<span class="wb">#1</span> <span class="wb">#2</span>', playHtml: '<span class="play-name">L Rip Lead 41 Dive / R Liz Lead 42 Dive</span>', typeHtml: '<span class="tag t-in">A-Gap Iso</span> Mot leads 4', idealHtml: 'Light A-gaps, widened DTs, CBs tight outside, or LBs flowing wide w/ motion.', avoidHtml: 'NT + Mike plugging A-gap / 0-tech beating C.', sitHtml: '<strong>1st &amp; 10 / 3rd &amp; 1-2</strong>' },
+        { wbHtml: '<span class="wb">#3</span> <span class="wb">#4</span>', playHtml: '<span class="play-name">L 44 Counter / R 43 Counter</span>', typeHtml: '<span class="tag t-in">Weak B-Gap</span> No mot; cut', idealHtml: 'Defense shifts heavy to Twins, LBs fast-flow strong, or weak DE rushes wide.', avoidHtml: 'Weak DT pinching hard into B-gap / blitz.', sitHtml: '<strong>2nd &amp; Med / RZ</strong>' },
+        { wbHtml: '<span class="wb">#5</span> <span class="wb">#7</span>', playHtml: '<span class="play-name">L Rip 38 Toss / R Liz 27 Toss</span>', typeHtml: '<span class="tag t-ed">Weak Edge</span> Mot toss; 4 ld', idealHtml: 'Stacked to Twins, LBs don\'t bump w/ motion, weak CB soft, or DE squeezes in.', avoidHtml: 'Weak CB/OLB squatting outside on pitch.', sitHtml: '<strong>1st &amp; 10 / Wide</strong>' },
+        { wbHtml: '<span class="wb">#6</span>', playHtml: '<span class="play-name">R Wing Rip 38 Toss</span> <em>(Pre-Snap Shift)</em>', typeHtml: '<span class="tag t-ed">Dbl Wing R</span> 2 shifts R+Rip', idealHtml: 'Defense slow to adjust to pre-snap Double Wing shift; overloads right edge.', avoidHtml: 'Right Hash (short edge) / heavy R overload.', sitHtml: '<strong>1st &amp; 10 / L Hash</strong>' },
+        { wbHtml: '<span class="wb">#8</span> <span class="wb wb-open">--*</span>', playHtml: '<span class="play-name">L Rip TE Reverse / R Liz TE Reverse*</span>', typeHtml: '<span class="tag t-ed">Counter Edge</span> Fake toss; TE', idealHtml: 'Over-aggressive pursuit chasing #5/#7 Toss; backside DE/LB abandoning edge.', avoidHtml: 'Backside DE disciplined / interior penetration.', sitHtml: '<strong>1st &amp; 10 / 1-2x Gm</strong>' },
+        { wbHtml: '<span class="wb">#9</span> <span class="wb">#10</span>', playHtml: '<span class="play-name">L Rip 47 Toss / R Liz 48 Toss</span>', typeHtml: '<span class="tag t-ed">Strong Edge</span> Fake mot; 4', idealHtml: 'LBs sprint across w/ Rip/Liz motion, box pinches inside, or strong CB soft/off.', avoidHtml: 'Strong CB playing tight force / stacked Twins.', sitHtml: '<strong>1st &amp; 10 / 2nd &amp; M</strong>' },
+        { wbHtml: '<span class="wb">#11</span> <span class="wb">#12</span>', playHtml: '<span class="play-name">R Liz 17 Keep / R Liz 18 Keep</span>', typeHtml: '<span class="tag t-kp">QB Keep</span> 17=L / 18=R Boot', idealHtml: '<strong>#11:</strong> LBs stay home on Liz / W-DE crashes. <strong>#12:</strong> Def bites L on Liz + 4 fake!', avoidHtml: '<strong>#11:</strong> L Hash / tight W-CB. <strong>#12:</strong> R-DE home.', sitHtml: '<strong>2nd/3rd &amp; 3-5 / GL</strong>' },
+        { wbHtml: '<span class="wb wb-b">#14</span>', playHtml: '<span class="play-name">R Liz 18 Cross</span> <em>(Boot Pass)</em>', typeHtml: '<span class="tag t-ps">PA Boot R</span> 3 Flag, TEs X', idealHtml: 'Defense bites hard on Liz / #12 Keep! Read: 3 Corner (15+) &rarr; L-TE Cross &rarr; Run.', avoidHtml: 'Right DE unblocked in face / Cov 2 flat CB.', sitHtml: '<strong>1st &amp; 10 / 2nd &amp; M</strong>' },
+        { wbHtml: '<span class="wb wb-b">#15</span> <span class="wb wb-b">#16</span>', playHtml: '<span class="play-name">L 2-Flat / R 3-Flat</span> <em>(Sprint Flood)</em>', typeHtml: '<span class="tag t-ps">3-Lvl Flood</span> Flat/Out/Seam', idealHtml: 'Pinched box, Cov 3, or Man! Read CB: jumps Flat &rarr; Out/TE; drops &rarr; hit Flat!', avoidHtml: 'Edge blitz beating 4\'s kick-out / short side.', sitHtml: '<strong>3rd &amp; 4-8 / Wide</strong>' },
+        { wbHtml: '<span class="wb wb-b">#17</span> <span class="wb wb-b">#24</span>', playHtml: '<span class="play-name">R Liz TE GO / R 41 Fake TE GO (Omaha)</span>', typeHtml: '<span class="tag t-ps">PA Twin GO</span> Both TEs Vert', idealHtml: 'Single-high FS creeping vs Run! <strong>#17:</strong> off Liz fake. <strong>#24:</strong> off 41 Dive fake (max pro).', avoidHtml: 'Cover 2 (2 high safeties) / A-B gap blitzes.', sitHtml: '<strong>1st &amp; 10 / 2nd &amp; Sh</strong>' },
+        { wbHtml: '<span class="wb wb-b">#18</span> <span class="wb wb-b">#19</span>', playHtml: '<span class="play-name">L 47 Direct / R 48 Direct</span> <em>(Beast)</em>', typeHtml: '<span class="tag t-dr">Direct Edge</span> 4 snap; 2&amp;3 ld', idealHtml: 'Numbers advantage strong (QB pulls defender weak), soft strong CB, or power edge.', avoidHtml: 'Def ignores QB weak &amp; stacks 5+ strong edge.', sitHtml: '<strong>3rd &amp; Sh / GL / 1st</strong>' },
+        { wbHtml: '<span class="wb wb-b">#20</span> <span class="wb wb-b">#21</span>', playHtml: '<span class="play-name">L / R 4 Direct 1-Option TE Drag</span>', typeHtml: '<span class="tag t-dr">Direct RPO</span> Flip QB; Run/Drg', idealHtml: 'Def ignores weak QB &amp; crashes on #18/#19 Direct! QB reads weak: Run or TE Drag.', avoidHtml: 'Weak CB/OLB squatting directly on QB pitch.', sitHtml: '<strong>2nd &amp; Med / Counter</strong>' },
+        { wbHtml: '<span class="wb wb-b">#22</span> <span class="wb wb-b">#23</span>', playHtml: '<span class="play-name">L / R 4 Direct 3 Screen</span>', typeHtml: '<span class="tag t-dr">Direct Scr</span> Fake Dir; Screen', idealHtml: 'Soft strong CB (6+ yds) OR aggressive blitz/DE flying at 4! Wing+TE+OT wall edge.', avoidHtml: 'Strong CB playing press-man on outer wing.', sitHtml: '<strong>1st &amp; 10 / 2nd &amp; Lg</strong>' }
+      ],
+      hashTitle: '3. Hash Mark Guide (Attack Wide Field)',
+      hashGuide: [
+        '<strong>LEFT Hash (Wide = RIGHT):</strong><br><span class="tag t-ed">#6 Wing 38</span> <span class="tag t-ed">#5 38 Toss</span> <span class="tag t-ed">#10 48 Toss</span> <span class="tag t-kp">#12 18 Kp</span> <span class="tag t-ps">#14 18 X</span> <span class="tag t-ps">#16 3-Flat</span> <span class="tag t-dr">#19 48 Dir</span> <span class="tag t-dr">#20 L 1-Opt</span> <span class="tag t-dr">#23 R Scr</span>',
+        '<strong>RIGHT Hash (Wide = LEFT):</strong><br><span class="tag t-ed">#7 27 Toss</span> <span class="tag t-ed">#9 47 Toss</span> <span class="tag t-ed">#8 L Rev</span> <span class="tag t-kp">#11 17 Kp</span> <span class="tag t-ps">#15 2-Flat</span> <span class="tag t-dr">#18 47 Dir</span> <span class="tag t-dr">#21 R 1-Opt</span> <span class="tag t-dr">#22 L Scr</span>',
+        '<strong>Either Hash / Boundary Safe:</strong> <span class="tag t-in">#1/2 Dive</span> <span class="tag t-in">#3/4 Ctr</span> <span class="tag t-ps">#17 Liz TE GO</span> <span class="tag t-ps">#24 Omaha</span>'
+      ],
+      ddTitle: '4. Down &amp; Distance Call Sheet',
+      downDistance: [
+        '<strong>1st &amp; 10 (Establish &amp; Test):</strong> <span class="tag t-in">#1/2 Dive</span> &bull; <span class="tag t-ed">#6/#7 Toss</span> &bull; <span class="tag t-dr">#18/19 Direct</span> &bull; <span class="tag t-ps">#14 18 Cross</span>',
+        '<strong>Short Yardage / GL (1-3 yds):</strong> <span class="tag t-in">#1/2 Dive</span> &bull; <span class="tag t-dr">#18/19 Direct</span> &bull; <span class="tag t-kp">#12 18 Keep</span> &bull; <span class="tag t-ps">#24 Omaha</span>',
+        '<strong>2nd/3rd &amp; Medium (4-7 yds):</strong> <span class="tag t-ps">#15/16 Flat</span> &bull; <span class="tag t-ps">#14 18 X</span> &bull; <span class="tag t-dr">#20/21 1-Opt</span> &bull; <span class="tag t-in">#3/4 Ctr</span> &bull; <span class="tag t-kp">#11 17 Kp</span>',
+        '<strong>3rd &amp; Long / Chunk (8+ yds):</strong> <span class="tag t-ps">#17 Liz GO</span> &bull; <span class="tag t-ps">#15/16 2/3-Flat</span> &bull; <span class="tag t-dr">#22/23 3 Scr</span> &bull; <span class="tag t-ed">#8 TE Rev</span>'
+      ],
+      combosTitle: '5. Chess Match Combos (Setup &rarr; Counterpunch)',
+      combos: [
+        '<strong>1. Dive Family:</strong> <span class="tag t-in">#1/2 Dive</span> 2x <span class="arrow">&rarr;</span> FS/LBs creep <span class="arrow">&rarr;</span> <span class="tag t-ps">#24 41 Fake TE GO (Omaha)</span>',
+        '<strong>2. Liz Series:</strong> <span class="tag t-ed">#7 27 Toss</span> / <span class="tag t-kp">#11 17 Kp</span> <span class="arrow">&rarr;</span> Flow L <span class="arrow">&rarr;</span> <span class="tag t-kp">#12 18 Keep</span> <span class="arrow">&rarr;</span> CB bites <span class="arrow">&rarr;</span> <span class="tag t-ps">#14 18 Cross</span>',
+        '<strong>3. Direct Series:</strong> <span class="tag t-dr">#18/19 Direct</span> 2x <span class="arrow">&rarr;</span> Stack strong <span class="arrow">&rarr;</span> <span class="tag t-dr">#20/21 1-Opt Drag</span> or <span class="tag t-dr">#22/23 3 Scr</span>',
+        '<strong>4. Motion Overload:</strong> <span class="tag t-ed">#5/7 Toss</span> <span class="arrow">&rarr;</span> No shift <span class="arrow">&rarr;</span> <span class="tag t-ed">#6 Wing Rip 38</span> | Over-pursue <span class="arrow">&rarr;</span> <span class="tag t-ed">#8 TE Rev</span>',
+        '<strong>5. Tight CB Punish:</strong> <span class="tag t-ed">#9/10 Toss</span> <span class="arrow">&rarr;</span> Strong CB walks up <span class="arrow">&rarr;</span> <span class="tag t-ps">#15/16 2/3-Flat</span> (Hit Out/Seam)'
+      ]
+    };
+
+    // Deep clone helper
+    function cloneData(obj) {
+      return JSON.parse(JSON.stringify(obj));
+    }
+
+    // Active application state (in-memory + synced to Drive on Apps Script)
+    let sheetData = cloneData(DEFAULT_DATA);
+    let isEditMode = true;
+    let autoSaveTimer = null;
+    const isGasEnv = (typeof google !== 'undefined' && google.script && google.script.run);
+
+    // =========================================================================
+    // 2. RENDERING ENGINE (Fully Inline-Editable)
+    // =========================================================================
+    function renderSheet() {
+      const ce = isEditMode ? 'contenteditable="true"' : '';
+      const sheet = document.getElementById('callSheet');
+
+      const defCardsHtml = sheetData.defensiveMatrix.map((c, idx) => `
+        <div class="def-card">
+          <div class="row-actions card-del">
+            <button class="mini-act-btn del" title="Delete card" onclick="deleteMatrixCard(${idx})">&times;</button>
+          </div>
+          <div class="def-look">
+            <strong ${ce} oninput="updateMatrixField(${idx}, 'lookTitle', this.innerHTML)">${c.lookTitle}</strong>
+            <span ${ce} oninput="updateMatrixField(${idx}, 'lookSub', this.innerHTML)">${c.lookSub}</span>
+          </div>
+          <div class="def-call">
+            <div class="primary-call" ${ce} oninput="updateMatrixField(${idx}, 'primaryHtml', this.innerHTML)">${c.primaryHtml}</div>
+            <div class="why-note" ${ce} oninput="updateMatrixField(${idx}, 'whyHtml', this.innerHTML)">${c.whyHtml}</div>
+          </div>
+        </div>
+      `).join('');
+
+      const playRowsHtml = sheetData.masterPlays.map((p, idx) => `
+        <tr>
+          <td>
+            <div style="display:flex; align-items:center; gap:3px; flex-wrap:wrap;">
+              <span ${ce} oninput="updatePlayField(${idx}, 'wbHtml', this.innerHTML)">${p.wbHtml}</span>
+              <span class="row-actions">
+                <button class="mini-act-btn del" title="Delete play row" onclick="deletePlayRow(${idx})">&times;</button>
+              </span>
+            </div>
+          </td>
+          <td ${ce} oninput="updatePlayField(${idx}, 'playHtml', this.innerHTML)">${p.playHtml}</td>
+          <td ${ce} oninput="updatePlayField(${idx}, 'typeHtml', this.innerHTML)">${p.typeHtml}</td>
+          <td ${ce} oninput="updatePlayField(${idx}, 'idealHtml', this.innerHTML)">${p.idealHtml}</td>
+          <td class="avoid-txt" ${ce} oninput="updatePlayField(${idx}, 'avoidHtml', this.innerHTML)">${p.avoidHtml}</td>
+          <td ${ce} oninput="updatePlayField(${idx}, 'sitHtml', this.innerHTML)">${p.sitHtml}</td>
+        </tr>
+      `).join('');
+
+      const buildMiniRows = (listKey) => sheetData[listKey].map((html, idx) => `
+        <div class="row-item" style="display:flex; justify-content:space-between; gap:4px; align-items:flex-start;">
+          <div style="flex:1;" ${ce} oninput="updateListField('${listKey}', ${idx}, this.innerHTML)">${html}</div>
+          <span class="row-actions">
+            <button class="mini-act-btn del" title="Delete item" onclick="deleteListItem('${listKey}', ${idx})">&times;</button>
+          </span>
+        </div>
+      `).join('');
+
+      sheet.innerHTML = `
+        <div class="header">
+          <div class="header-title" ${ce} oninput="updateRootField('headerTitle', this.innerHTML)">${sheetData.headerTitle}</div>
+          <div class="header-meta">
+            <span class="meta-pill" ${ce} oninput="updateRootField('setALabel', this.innerHTML)">${sheetData.setALabel}</span>
+            <span class="meta-pill" style="background:#9a3412;" ${ce} oninput="updateRootField('setBLabel', this.innerHTML)">${sheetData.setBLabel}</span>
+            <span class="meta-pill" ${ce} oninput="updateRootField('quickKeyNote', this.innerHTML)">${sheetData.quickKeyNote}</span>
+            <div class="legend">
+              <span class="tag t-in">INSIDE</span>
+              <span class="tag t-ed">TOSS/REV</span>
+              <span class="tag t-kp">QB KEEP</span>
+              <span class="tag t-ps">PASS</span>
+              <span class="tag t-dr">DIRECT/RPO</span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="sec-title">
+            <span ${ce} oninput="updateRootField('matrixTitle', this.innerHTML)">${sheetData.matrixTitle}</span>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <span class="sec-sub" ${ce} oninput="updateRootField('matrixSub', this.innerHTML)">${sheetData.matrixSub}</span>
+              <span class="row-actions"><button class="mini-act-btn add" onclick="addMatrixCard()">+ Card</button></span>
+            </div>
+          </div>
+          <div class="def-grid">${defCardsHtml}</div>
+        </div>
+
+        <div>
+          <div class="sec-title">
+            <span ${ce} oninput="updateRootField('masterTitle', this.innerHTML)">${sheetData.masterTitle}</span>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <span class="sec-sub" ${ce} oninput="updateRootField('masterSub', this.innerHTML)">${sheetData.masterSub}</span>
+              <span class="row-actions"><button class="mini-act-btn add" onclick="addPlayRow()">+ Play Row</button></span>
+            </div>
+          </div>
+          <table class="play-table">
+            <thead>
+              <tr>
+                <th style="width: 8%;">WB #</th>
+                <th style="width: 21%;">Play Call</th>
+                <th style="width: 16%;">Type &amp; Action</th>
+                <th style="width: 24.5%;">Ideal Look (Highest Probability)</th>
+                <th style="width: 19%;">Avoid When...</th>
+                <th style="width: 11.5%;">Best Situation</th>
+              </tr>
+            </thead>
+            <tbody>${playRowsHtml}</tbody>
+          </table>
+        </div>
+
+        <div class="bottom-grid">
+          <div class="mini-box">
+            <div class="sec-title">
+              <span ${ce} oninput="updateRootField('hashTitle', this.innerHTML)">${sheetData.hashTitle}</span>
+              <span class="row-actions"><button class="mini-act-btn add" onclick="addListItem('hashGuide')">+</button></span>
+            </div>
+            <div class="mini-body">${buildMiniRows('hashGuide')}</div>
+          </div>
+
+          <div class="mini-box">
+            <div class="sec-title">
+              <span ${ce} oninput="updateRootField('ddTitle', this.innerHTML)">${sheetData.ddTitle}</span>
+              <span class="row-actions"><button class="mini-act-btn add" onclick="addListItem('downDistance')">+</button></span>
+            </div>
+            <div class="mini-body">${buildMiniRows('downDistance')}</div>
+          </div>
+
+          <div class="mini-box">
+            <div class="sec-title">
+              <span ${ce} oninput="updateRootField('combosTitle', this.innerHTML)">${sheetData.combosTitle}</span>
+              <span class="row-actions"><button class="mini-act-btn add" onclick="addListItem('combos')">+</button></span>
+            </div>
+            <div class="mini-body">${buildMiniRows('combos')}</div>
+          </div>
+        </div>
+      `;
+
+      applyFontScale(sheetData.fontScale || 100);
+    }
+
+    // =========================================================================
+    // 3. INLINE EDITING & STRUCTURAL MUTATIONS
+    // =========================================================================
+    function updateRootField(key, val) {
+      sheetData[key] = val;
+      scheduleAutoSave();
+    }
+    function updateMatrixField(idx, key, val) {
+      sheetData.defensiveMatrix[idx][key] = val;
+      scheduleAutoSave();
+    }
+    function updatePlayField(idx, key, val) {
+      sheetData.masterPlays[idx][key] = val;
+      scheduleAutoSave();
+    }
+    function updateListField(listKey, idx, val) {
+      sheetData[listKey][idx] = val;
+      scheduleAutoSave();
+    }
+
+    function addMatrixCard() {
+      sheetData.defensiveMatrix.push({
+        lookTitle: 'New Defensive Look',
+        lookSub: 'Describe alignment or tendency',
+        primaryHtml: '<span class="tag t-in"><span class="n">#1</span> New Play Call</span>',
+        whyHtml: 'Short coaching key or secondary counter.'
+      });
+      renderSheet();
+      scheduleAutoSave();
+      showToast('Added new defensive reaction card', 'success');
+    }
+
+    function deleteMatrixCard(idx) {
+      sheetData.defensiveMatrix.splice(idx, 1);
+      renderSheet();
+      scheduleAutoSave();
+    }
+
+    function addPlayRow() {
+      sheetData.masterPlays.push({
+        wbHtml: '<span class="wb">#13</span>',
+        playHtml: '<span class="play-name">New Play Name</span>',
+        typeHtml: '<span class="tag t-ed">Concept</span> Action',
+        idealHtml: 'Describe ideal defensive look.',
+        avoidHtml: 'Describe look to avoid.',
+        sitHtml: '<strong>1st &amp; 10</strong>'
+      });
+      renderSheet();
+      scheduleAutoSave();
+      showToast('Added new play row', 'success');
+    }
+
+    function deletePlayRow(idx) {
+      sheetData.masterPlays.splice(idx, 1);
+      renderSheet();
+      scheduleAutoSave();
+    }
+
+    function addListItem(listKey) {
+      sheetData[listKey].push('<strong>New Situation:</strong> <span class="tag t-in">#1 Play</span>');
+      renderSheet();
+      scheduleAutoSave();
+    }
+
+    function deleteListItem(listKey, idx) {
+      sheetData[listKey].splice(idx, 1);
+      renderSheet();
+      scheduleAutoSave();
+    }
+
+    function toggleEditMode() {
+      isEditMode = !isEditMode;
+      const btn = document.getElementById('toggleEditBtn');
+      const bar = document.getElementById('editHelperBar');
+      document.body.classList.toggle('editing-active', isEditMode);
+      bar.classList.toggle('hidden', !isEditMode);
+      btn.textContent = isEditMode ? '✏️ Edit Mode: ON' : '🔒 Edit Mode: OFF';
+      btn.className = isEditMode ? 'btn btn-edit-on' : 'btn btn-edit-off';
+      renderSheet();
+    }
+
+    function updateFontScale(val) {
+      sheetData.fontScale = Number(val);
+      applyFontScale(sheetData.fontScale);
+      scheduleAutoSave();
+    }
+
+    function applyFontScale(val) {
+      document.getElementById('fontScaleSlider').value = val;
+      document.getElementById('fontScaleVal').textContent = val + '%';
+      const sheet = document.getElementById('callSheet');
+      sheet.style.zoom = (val / 100);
+    }
+
+    // Insert formatted play tag at active cursor inside contenteditable
+    function insertStyledTag(family) {
+      const sel = window.getSelection();
+      if (!sel || !sel.rangeCount) {
+        showToast('Click inside any text cell on the sheet first!', 'warn');
+        return;
+      }
+      const anchor = sel.anchorNode;
+      const editableParent = anchor && (anchor.nodeType === 1 ? anchor : anchor.parentElement)?.closest('[contenteditable="true"]');
+      if (!editableParent) {
+        showToast('Click inside any text cell on the sheet first!', 'warn');
+        return;
+      }
+      const html = `&nbsp;<span class="tag t-${family}"><span class="n">#0</span> Play</span>&nbsp;`;
+      document.execCommand('insertHTML', false, html);
+      editableParent.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+
+    function insertBadge(set) {
+      const sel = window.getSelection();
+      if (!sel || !sel.rangeCount) {
+        showToast('Click inside a WB # cell first!', 'warn');
+        return;
+      }
+      const anchor = sel.anchorNode;
+      const editableParent = anchor && (anchor.nodeType === 1 ? anchor : anchor.parentElement)?.closest('[contenteditable="true"]');
+      if (!editableParent) {
+        showToast('Click inside a WB # cell first!', 'warn');
+        return;
+      }
+      const cls = set === 'B' ? 'wb wb-b' : 'wb';
+      document.execCommand('insertHTML', false, `&nbsp;<span class="${cls}">#0</span>&nbsp;`);
+      editableParent.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+
+    function prepareAndPrint() {
+      // Remove focus outline before printing
+      if (document.activeElement) document.activeElement.blur();
+      window.print();
+    }
+
+    function confirmReset() {
+      sheetData = cloneData(DEFAULT_DATA);
+      renderSheet();
+      closeModal('resetModal');
+      scheduleAutoSave();
+      showToast('Call sheet restored to original TC JV Playbook', 'success');
+    }
+
+    // =========================================================================
+    // 4. GOOGLE DRIVE AUTO-SAVE & BACKUP (Apps Script + Offline JSON Fallback)
+    // =========================================================================
+    function setStatus(state, text) {
+      const dot = document.getElementById('statusDot');
+      const lbl = document.getElementById('statusText');
+      dot.className = 'status-dot ' + state;
+      lbl.textContent = text;
+    }
+
+    function scheduleAutoSave() {
+      if (!isGasEnv) {
+        setStatus('', 'Unsaved edits (Use Backup or Apps Script)');
+        return;
+      }
+      setStatus('saving', 'Saving to Drive...');
+      clearTimeout(autoSaveTimer);
+      autoSaveTimer = setTimeout(() => {
+        google.script.run
+          .withSuccessHandler((res) => {
+            setStatus('connected', 'Auto-saved to Drive (' + res.timestamp + ')');
+          })
+          .withFailureHandler((err) => {
+            setStatus('', 'Drive save error');
+            showToast('Drive Auto-Save failed: ' + err.message, 'error');
+          })
+          .saveLiveSheet(JSON.stringify(sheetData, null, 2));
+      }, 1800);
+    }
+
+    function handleBackupClick() {
+      if (isGasEnv) {
+        setStatus('saving', 'Creating Drive Backup...');
+        const printableSnapshot = buildPrintableSnapshotHtml();
+        google.script.run
+          .withSuccessHandler((res) => {
+            setStatus('connected', 'Backed up to Drive (' + res.timestamp + ')');
+            showToast('Saved backup snapshot: ' + res.backupName + ' inside Backups/', 'success');
+          })
+          .withFailureHandler((err) => {
+            setStatus('connected', 'Drive Connected');
+            showToast('Backup failed: ' + err.message, 'error');
+          })
+          .createBackupSnapshot(JSON.stringify(sheetData, null, 2), printableSnapshot);
+      } else {
+        // Download JSON backup locally when in Canvas preview
+        const blob = new Blob([JSON.stringify(sheetData, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const ts = new Date().toISOString().slice(0, 16).replace(/[:T]/g, '-');
+        a.href = url;
+        a.download = `TC_JV_CallSheet_Backup_${ts}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast('Downloaded JSON backup! Deploy to script.google.com for auto-Drive backups.', 'success');
+      }
+    }
+
+    function triggerJsonImport() {
+      document.getElementById('jsonImportInput').click();
+    }
+
+    function handleJsonImport(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          if (!parsed.defensiveMatrix || !parsed.masterPlays) {
+            throw new Error('Invalid call sheet JSON format.');
+          }
+          sheetData = parsed;
+          renderSheet();
+          scheduleAutoSave();
+          showToast('Loaded call sheet from ' + file.name, 'success');
+        } catch (err) {
+          showToast('Could not read JSON: ' + err.message, 'error');
+        }
+      };
+      reader.readAsText(file);
+      event.target.value = '';
+    }
+
+    function buildPrintableSnapshotHtml() {
+      const styles = document.querySelector('style').innerHTML;
+      const wasEditing = isEditMode;
+      if (wasEditing) { isEditMode = false; renderSheet(); }
+      const sheetMarkup = document.getElementById('callSheet').outerHTML;
+      if (wasEditing) { isEditMode = true; renderSheet(); }
+      const safeTitle = sheetData.headerTitle.replace(/<[^>]+>/g, '');
+      // Split document tags so Google Apps Script's HTML parser never breaks the script block
+      return [
+        '<' + '!DOCTYPE html>',
+        '<' + 'html lang="en">',
+        '<' + 'head>',
+        '<' + 'meta charset="UTF-8">',
+        '<' + 'title>' + safeTitle + '<' + '/title>',
+        '<' + 'style>' + styles + '<' + '/style>',
+        '<' + '/head>',
+        '<' + 'body style="background:#fff;padding:0;">',
+        sheetMarkup,
+        '<' + '/body>',
+        '<' + '/html>'
+      ].join('');
+    }
+
+    // =========================================================================
+    // 5. GEMINI AI PLAYBOOK & ARMBAND UPDATER
+    // =========================================================================
+    const CALLSHEET_SCHEMA = {
+      type: "OBJECT",
+      properties: {
+        headerTitle: { type: "STRING" },
+        setALabel: { type: "STRING" },
+        setBLabel: { type: "STRING" },
+        quickKeyNote: { type: "STRING" },
+        matrixSub: { type: "STRING" },
+        masterSub: { type: "STRING" },
+        defensiveMatrix: {
+          type: "ARRAY",
+          description: "Exactly 10 concise sideline reaction cards (2 cols x 5 rows) covering tight CBs, soft CBs, single-high FS, over-shifts, LB motion response, pinched box, blitzes, and DE techniques.",
+          items: {
+            type: "OBJECT",
+            properties: {
+              lookTitle: { type: "STRING" },
+              lookSub: { type: "STRING" },
+              primaryPlays: {
+                type: "ARRAY",
+                items: {
+                  type: "OBJECT",
+                  properties: {
+                    num: { type: "STRING", description: "Wristband # like #15/16 or #5" },
+                    label: { type: "STRING", description: "Short play name" },
+                    family: { type: "STRING", enum: ["in", "ed", "kp", "ps", "dr"] },
+                    extra: { type: "STRING", description: "Optional short note e.g. (Hit Out)" }
+                  },
+                  required: ["num", "label", "family"]
+                }
+              },
+              whyNote: { type: "STRING" }
+            },
+            required: ["lookTitle", "lookSub", "primaryPlays", "whyNote"]
+          }
+        },
+        masterPlays: {
+          type: "ARRAY",
+          description: "11 to 14 grouped rows covering every play in the playbook & wristband so it fits on 1 laminated page.",
+          items: {
+            type: "OBJECT",
+            properties: {
+              badges: {
+                type: "ARRAY",
+                items: {
+                  type: "OBJECT",
+                  properties: {
+                    text: { type: "STRING" },
+                    set: { type: "STRING", enum: ["A", "B", "open"] }
+                  },
+                  required: ["text", "set"]
+                }
+              },
+              playName: { type: "STRING" },
+              tagLabel: { type: "STRING" },
+              family: { type: "STRING", enum: ["in", "ed", "kp", "ps", "dr"] },
+              actionNote: { type: "STRING" },
+              idealLook: { type: "STRING" },
+              avoidWhen: { type: "STRING" },
+              bestSituation: { type: "STRING" }
+            },
+            required: ["badges", "playName", "tagLabel", "family", "actionNote", "idealLook", "avoidWhen", "bestSituation"]
+          }
+        },
+        hashGuide: {
+          type: "ARRAY",
+          description: "3 items: Left Hash (Wide=Right), Right Hash (Wide=Left), Either Hash",
+          items: {
+            type: "OBJECT",
+            properties: {
+              title: { type: "STRING" },
+              plays: {
+                type: "ARRAY",
+                items: {
+                  type: "OBJECT",
+                  properties: {
+                    num: { type: "STRING" },
+                    label: { type: "STRING" },
+                    family: { type: "STRING", enum: ["in", "ed", "kp", "ps", "dr"] }
+                  },
+                  required: ["num", "label", "family"]
+                }
+              }
+            },
+            required: ["title", "plays"]
+          }
+        },
+        downDistance: {
+          type: "ARRAY",
+          description: "4 items: 1st & 10, Short Yardage / GL, 2nd/3rd & Medium, 3rd & Long",
+          items: {
+            type: "OBJECT",
+            properties: {
+              title: { type: "STRING" },
+              plays: {
+                type: "ARRAY",
+                items: {
+                  type: "OBJECT",
+                  properties: {
+                    num: { type: "STRING" },
+                    label: { type: "STRING" },
+                    family: { type: "STRING", enum: ["in", "ed", "kp", "ps", "dr"] }
+                  },
+                  required: ["num", "label", "family"]
+                }
+              }
+            },
+            required: ["title", "plays"]
+          }
+        },
+        combos: {
+          type: "ARRAY",
+          description: "5 setup-to-counterpunch sequences",
+          items: {
+            type: "OBJECT",
+            properties: {
+              title: { type: "STRING" },
+              description: { type: "STRING" }
+            },
+            required: ["title", "description"]
+          }
+        }
+      },
+      required: ["headerTitle", "setALabel", "setBLabel", "quickKeyNote", "defensiveMatrix", "masterPlays", "hashGuide", "downDistance", "combos"]
+    };
+
+    function fileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const result = reader.result;
+          const base64 = result.split(',')[1];
+          resolve({ mimeType: file.type || 'application/pdf', data: base64, name: file.name });
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function escapeHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    }
+
+    function convertAiJsonToSheetData(ai) {
+      const renderTag = (p) => {
+        const fam = ['in','ed','kp','ps','dr'].includes(p.family) ? p.family : 'in';
+        const numPart = p.num ? `<span class="n">${escapeHtml(p.num)}</span> ` : '';
+        const extra = p.extra ? ` ${escapeHtml(p.extra)}` : '';
+        return `<span class="tag t-${fam}">${numPart}${escapeHtml(p.label)}</span>${extra}`;
+      };
+
+      return {
+        fontScale: sheetData.fontScale || 100,
+        headerTitle: escapeHtml(ai.headerTitle),
+        setALabel: escapeHtml(ai.setALabel),
+        setBLabel: escapeHtml(ai.setBLabel),
+        quickKeyNote: escapeHtml(ai.quickKeyNote),
+        matrixTitle: sheetData.matrixTitle,
+        matrixSub: escapeHtml(ai.matrixSub || sheetData.matrixSub),
+        masterTitle: `2. Complete Master Play Reference — Matched to QB Wrist Coach (${escapeHtml(ai.setALabel)} | ${escapeHtml(ai.setBLabel)})`,
+        masterSub: escapeHtml(ai.masterSub || ''),
+        defensiveMatrix: (ai.defensiveMatrix || []).map(c => ({
+          lookTitle: escapeHtml(c.lookTitle),
+          lookSub: escapeHtml(c.lookSub),
+          primaryHtml: (c.primaryPlays || []).map(renderTag).join(' &bull; '),
+          whyHtml: escapeHtml(c.whyNote)
+        })),
+        masterPlays: (ai.masterPlays || []).map(p => ({
+          wbHtml: (p.badges || []).map(b => {
+            const cls = b.set === 'B' ? 'wb wb-b' : (b.set === 'open' ? 'wb wb-open' : 'wb');
+            return `<span class="${cls}">${escapeHtml(b.text)}</span>`;
+          }).join(' '),
+          playHtml: `<span class="play-name">${escapeHtml(p.playName)}</span>`,
+          typeHtml: `<span class="tag t-${p.family || 'in'}">${escapeHtml(p.tagLabel)}</span> ${escapeHtml(p.actionNote)}`,
+          idealHtml: escapeHtml(p.idealLook),
+          avoidHtml: escapeHtml(p.avoidWhen),
+          sitHtml: `<strong>${escapeHtml(p.bestSituation)}</strong>`
+        })),
+        hashTitle: sheetData.hashTitle,
+        hashGuide: (ai.hashGuide || []).map((h, i) => {
+          const br = i < 2 ? '<br>' : ' ';
+          return `<strong>${escapeHtml(h.title)}:</strong>${br}` + (h.plays || []).map(renderTag).join(' ');
+        }),
+        ddTitle: sheetData.ddTitle,
+        downDistance: (ai.downDistance || []).map(d =>
+          `<strong>${escapeHtml(d.title)}:</strong> ` + (d.plays || []).map(renderTag).join(' &bull; ')
+        ),
+        combosTitle: sheetData.combosTitle,
+        combos: (ai.combos || []).map(c =>
+          `<strong>${escapeHtml(c.title)}</strong> ${escapeHtml(c.description).replace(/->/g, '<span class="arrow">&rarr;</span>')}`
+        )
+      };
+    }
+
+    function setAiStatus(msg, isError = false, loading = true) {
+      const box = document.getElementById('aiStatusBox');
+      const sp = document.getElementById('aiSpinner');
+      const txt = document.getElementById('aiStatusText');
+      box.className = 'ai-status-box show' + (isError ? ' error' : '');
+      sp.style.display = loading ? 'block' : 'none';
+      txt.textContent = msg;
+    }
+
+    async function fetchWithBackoff(url, options, maxRetries = 4) {
+      let delay = 1000;
+      for (let attempt = 0; attempt <= maxRetries; attempt++) {
+        const res = await fetch(url, options);
+        if (res.ok) return res;
+        if (attempt < maxRetries && (res.status === 429 || res.status >= 500)) {
+          await new Promise(r => setTimeout(r, delay));
+          delay *= 2;
+          continue;
+        }
+        const errText = await res.text();
+        throw new Error(`API Error (${res.status}): ${errText.slice(0, 180)}`);
+      }
+    }
+
+    async function runAiUpdater() {
+      const pbFiles = Array.from(document.getElementById('playbookFile').files);
+      const abFiles = Array.from(document.getElementById('armbandFile').files);
+      const coachNotes = document.getElementById('coachNotes').value.trim();
+      const enteredKey = document.getElementById('geminiApiKeyInput').value.trim();
+      const btn = document.getElementById('runAiBtn');
+
+      if (pbFiles.length === 0 && abFiles.length === 0 && !coachNotes) {
+        setAiStatus('Please upload a Playbook PDF/image, an Armband PDF/image, or enter coaching instructions.', true, false);
+        return;
+      }
+
+      btn.disabled = true;
+      setAiStatus('Reading uploaded files...', false, true);
+
+      try {
+        const parts = [];
+        for (const f of pbFiles) {
+          const b64 = await fileToBase64(f);
+          parts.push({ text: `PLAYBOOK FILE: ${f.name}` });
+          parts.push({ inlineData: { mimeType: b64.mimeType, data: b64.data } });
+        }
+        for (const f of abFiles) {
+          const b64 = await fileToBase64(f);
+          parts.push({ text: `QB ARMBAND / WRIST COACH FILE: ${f.name}` });
+          parts.push({ inlineData: { mimeType: b64.mimeType, data: b64.data } });
+        }
+
+        const promptText = `You are an expert high school / JV football offensive coordinator.
+Analyze the uploaded Playbook and/or QB Armband files (plus the current call sheet context below if only one file was uploaded) and produce an updated, ultra-concise 1-page sideline play-calling cheat sheet in JSON format.
+
+CRITICAL RULES:
+- Match exact wristband play numbers from the uploaded QB Armband! Clearly distinguish Set A vs Set B badges. If any play in the playbook is missing from the armband, flag it as "--*" (open) and note it in masterSub.
+- Keep text punchy and compact so the entire call sheet prints on ONE US Letter landscape page.
+- Color family codes: "in" = Inside Run (Dive/Counter/Iso/Power), "ed" = Outside Run (Toss/Sweep/Reverse/Jet), "kp" = QB Keep/Boot Run, "ps" = Pass/Play-Action, "dr" = Direct Snap / RPO / Screen / Trick.
+- Coach's extra instructions: ${coachNotes || 'None'}
+- Current Sheet Summary (for reference if updating incrementally): ${JSON.stringify(sheetData.masterPlays.map(p => p.wbHtml + ' ' + p.playHtml)).slice(0, 1500)}`;
+
+        parts.push({ text: promptText });
+
+        const payload = {
+          contents: [{ role: 'user', parts }],
+          generationConfig: {
+            responseMimeType: 'application/json',
+            responseSchema: CALLSHEET_SCHEMA
+          }
+        };
+
+        // If on Google Apps Script and user did not type a key, check Script Properties via Code.gs
+        let apiKey = enteredKey || "";
+        if (isGasEnv && !apiKey) {
+          setAiStatus('Fetching saved Gemini key from Apps Script Properties...', false, true);
+          apiKey = await new Promise((resolve, reject) => {
+            google.script.run
+              .withSuccessHandler(resolve)
+              .withFailureHandler(reject)
+              .getGeminiApiKey();
+          });
+          if (!apiKey) {
+            throw new Error('No Gemini API key found. Paste your key in field #4 or save GEMINI_API_KEY in Apps Script Project Settings.');
+          }
+        }
+
+        setAiStatus('Analyzing plays & wristband numbers with Gemini 3 Flash...', false, true);
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+        const response = await fetchWithBackoff(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+        const jsonText = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (!jsonText) throw new Error('Gemini returned an empty response. Please try again.');
+
+        const parsedAi = JSON.parse(jsonText);
+
+        // Auto-backup previous version to Drive before overwriting (when on Apps Script)
+        if (isGasEnv) {
+          setAiStatus('Backing up previous version to Google Drive before applying updates...', false, true);
+          await new Promise((resolve) => {
+            google.script.run
+              .withSuccessHandler(resolve)
+              .withFailureHandler(resolve)
+              .createBackupSnapshot(JSON.stringify(sheetData, null, 2), buildPrintableSnapshotHtml());
+          });
+        }
+
+        sheetData = convertAiJsonToSheetData(parsedAi);
+        renderSheet();
+        scheduleAutoSave();
+
+        closeModal('aiModal');
+        document.getElementById('aiStatusBox').className = 'ai-status-box';
+        showToast('Call sheet updated from your uploaded files!', 'success');
+      } catch (err) {
+        setAiStatus(err.message || 'Failed to update call sheet.', true, false);
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    // =========================================================================
+    // 6. APPS SCRIPT CODE.GS GENERATOR & UTILITIES
+    // =========================================================================
+    const GAS_CODE_SOURCE = `// ============================================================================
+// TC JV Sideline Call Sheet — Google Apps Script Backend (Code.gs)
+// Automatically saves & backs up to your Google Drive folder
+// ============================================================================
+const DRIVE_FOLDER_ID = '${DRIVE_FOLDER_ID}';
+const LIVE_FILENAME   = 'TC_JV_CallSheet_LIVE.json';
+const BACKUP_SUBFOLDER = 'Backups';
+
+/**
+ * Serves the interactive 1-page call sheet web app (Index.html)
+ */
+function doGet() {
+  return HtmlService.createHtmlOutputFromFile('Index')
+    .setTitle('TC JV Sideline Call Sheet')
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
+    .addMetaTag('viewport', 'width=device-width, initial-scale=1');
+}
+
+/**
+ * Loads the latest auto-saved call sheet JSON from your Drive folder on startup
+ */
+function loadLatestSheet() {
+  var folder = DriveApp.getFolderById(DRIVE_FOLDER_ID);
+  var files = folder.getFilesByName(LIVE_FILENAME);
+  if (files.hasNext()) {
+    var file = files.next();
+    return {
+      found: true,
+      data: file.getBlob().getDataAsString(),
+      timestamp: Utilities.formatDate(file.getLastUpdated(), Session.getScriptTimeZone(), 'MMM d, h:mm a')
+    };
+  }
+  return { found: false };
+}
+
+/**
+ * Auto-saves the current call sheet JSON into your Drive folder
+ */
+function saveLiveSheet(jsonString) {
+  var folder = DriveApp.getFolderById(DRIVE_FOLDER_ID);
+  var files = folder.getFilesByName(LIVE_FILENAME);
+  if (files.hasNext()) {
+    files.next().setContent(jsonString);
+  } else {
+    folder.createFile(LIVE_FILENAME, jsonString, MimeType.PLAIN_TEXT);
+  }
+  return {
+    success: true,
+    timestamp: Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'MMM d, h:mm a')
+  };
+}
+
+/**
+ * Creates a timestamped JSON + Printable HTML backup inside Backups/ in your Drive folder
+ */
+function createBackupSnapshot(jsonString, printableHtml) {
+  saveLiveSheet(jsonString);
+  var folder = DriveApp.getFolderById(DRIVE_FOLDER_ID);
+  var subIter = folder.getFoldersByName(BACKUP_SUBFOLDER);
+  var backupFolder = subIter.hasNext() ? subIter.next() : folder.createFolder(BACKUP_SUBFOLDER);
+
+  var tz = Session.getScriptTimeZone();
+  var stamp = Utilities.formatDate(new Date(), tz, 'yyyy-MM-dd_HH-mm-ss');
+  var jsonName = 'TC_JV_CallSheet_' + stamp + '.json';
+  var htmlName = 'TC_JV_CallSheet_Printable_' + stamp + '.html';
+
+  backupFolder.createFile(jsonName, jsonString, MimeType.PLAIN_TEXT);
+  backupFolder.createFile(htmlName, printableHtml, MimeType.HTML);
+
+  return {
+    success: true,
+    backupName: htmlName,
+    timestamp: Utilities.formatDate(new Date(), tz, 'MMM d, h:mm a')
+  };
+}
+
+/**
+ * Optional: Reads GEMINI_API_KEY from Project Settings -> Script Properties
+ */
+function getGeminiApiKey() {
+  return PropertiesService.getScriptProperties().getProperty('GEMINI_API_KEY') || '';
+}`;
+
+    function copyTextToClipboard(text) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+    }
+
+    function copyGasCode() {
+      copyTextToClipboard(GAS_CODE_SOURCE);
+      showToast('Copied Code.gs! Paste it into script.google.com', 'success');
+    }
+
+    function downloadStandaloneIndexHtml() {
+      const cloneDoc = document.documentElement.cloneNode(true);
+      cloneDoc.querySelectorAll('.modal-backdrop').forEach(m => m.classList.remove('open'));
+      const toastEl = cloneDoc.querySelector('#toast');
+      if (toastEl) toastEl.className = 'toast';
+      // Clear dynamically populated containers so the downloaded Index.html stays clean
+      const clonedSheet = cloneDoc.querySelector('#callSheet');
+      if (clonedSheet) clonedSheet.innerHTML = '';
+      const clonedGas = cloneDoc.querySelector('#gasCodePreview');
+      if (clonedGas) clonedGas.textContent = '';
+
+      const htmlString = '<' + '!DOCTYPE html>\n' + cloneDoc.outerHTML;
+      const blob = new Blob([htmlString], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'Index.html';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('Downloaded Index.html! Paste its contents into Index.html on script.google.com', 'success');
+    }
+
+    function openModal(id) {
+      document.getElementById(id).classList.add('open');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('open');
+    }
+
+    let toastTimer = null;
+    function showToast(msg, type = 'success') {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = `toast show ${type}`;
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => { t.className = 'toast'; }, 3800);
+    }
+
+    // =========================================================================
+    // 7. INITIALIZATION
+    // =========================================================================
+    function initApp() {
+      try {
+        const gasPreviewEl = document.getElementById('gasCodePreview');
+        if (gasPreviewEl) {
+          gasPreviewEl.textContent = GAS_CODE_SOURCE;
+        }
+        renderSheet();
+
+        if (isGasEnv) {
+          const backupBtn = document.getElementById('backupBtn');
+          if (backupBtn) backupBtn.textContent = '💾 Backup to Drive';
+          setStatus('saving', 'Loading from Google Drive...');
+          google.script.run
+            .withSuccessHandler((res) => {
+              if (res && res.found && res.data) {
+                try {
+                  sheetData = JSON.parse(res.data);
+                  renderSheet();
+                  setStatus('connected', 'Drive Loaded (' + res.timestamp + ')');
+                  showToast('Loaded your latest saved sheet from Google Drive!', 'success');
+                } catch (e) {
+                  setStatus('connected', 'Drive Connected (Using default)');
+                }
+              } else {
+                setStatus('connected', 'Drive Connected (New sheet)');
+              }
+            })
+            .withFailureHandler((err) => {
+              setStatus('', 'Drive access error');
+              showToast('Could not load from Drive: ' + err.message, 'error');
+            })
+            .loadLatestSheet();
+        }
+      } catch (err) {
+        const sheet = document.getElementById('callSheet');
+        if (sheet) {
+          sheet.innerHTML = '<div style="padding:20px;color:#b91c1c;font-weight:700;">Initialization error: ' + err.message + '</div>';
+        }
+      }
+    }
+
+    // Run immediately if the DOM is already ready (prevents blank page in Apps Script)
+    if (document.readyState === 'loading') {
+      window.addEventListener('DOMContentLoaded', initApp);
+    } else {
+      initApp();
+    }
+  </script>
+</body>
+</html>
